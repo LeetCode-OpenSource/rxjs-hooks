@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 const PREFIX = '__SUBJECT__'
 
 const propsSubjects: {
-  [index: string]: Subject<any>
+  [index: string]: Subject<any> | null
 } = {}
 
 let subjectId = 0
@@ -50,9 +50,11 @@ export function useObservable<T, U extends ReadonlyArray<any> | undefined>(
       const subscription = input$.subscribe((value) => {
         setState([value, subjectId])
       })
-      propsSubjects[concatSubjectKey(subjectId)] = props$
+      const subjectKey = concatSubjectKey(subjectId)
+      propsSubjects[subjectKey] = props$
       return () => {
         subscription.unsubscribe()
+        propsSubjects[subjectKey] = null
       }
     },
     [0], // immutable forever
