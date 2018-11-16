@@ -1,6 +1,6 @@
 {
   "name": "rxjs-hooks",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React hooks for RxJS",
   "main": "esm/index.js",
   "author": "LongYinan <lynweklm@gmail.com>",
