@@ -29,7 +29,7 @@ describe('useEventCallback specs', () => {
     const testRenderer = create(fixtureNode)
     testRenderer.update(fixtureNode)
     const button = find(testRenderer.root, 'button')
-    expect(button.props.onClick.name).toBe('clickCallback')
+    expect(button.props.onClick.name).toBe('eventCallback')
   })
 
   it('should render value', () => {

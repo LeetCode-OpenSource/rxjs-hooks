@@ -10,6 +10,6 @@ module.exports = {
   },
   testRegex: '/__test__/.*\\.spec\\.tsx?$',
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/__test__/**'],
+  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/__test__/**', '!src/index.ts'],
   coverageReporters: ['lcov', 'html']
 }
