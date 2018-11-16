@@ -33,25 +33,6 @@ function App() {
 ReactDOM.render(<App />, document.querySelector('#app'))
 ```
 
-#### Simple:
-```tsx
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { useObservable } from 'rxjs-hooks'
-import { of } from 'rxjs'
-
-function App() {
-  const value = useObservable(() => of(1000))
-  return (
-    // render twice
-    // null and 1000
-    <h1>{value}</h1>
-  )
-}
-
-ReactDOM.render(<App />, document.querySelector('#app'))
-```
-
 #### With default value:
 ```tsx
 import React from 'react'
@@ -125,9 +106,11 @@ import { useEventCallback } from 'rxjs-hooks'
 import { mapTo } from 'rxjs/operators'
 
 function App() {
-  const [clickCallback, value] = useEventCallback((event$: Observable<React.React.SyntheticEvent<HTMLButtonElement>>) => event$.pipe(
-    mapTo(1000)
-  ))
+  const [clickCallback, value] = useEventCallback((event$: Observable<React.React.SyntheticEvent<HTMLButtonElement>>) =>
+    event$.pipe(
+      mapTo(1000)
+    )
+  )
   return (
     // render null
     // click button
@@ -151,9 +134,12 @@ import { useEventCallback } from 'rxjs-hooks'
 import { mapTo } from 'rxjs/operators'
 
 function App() {
-  const [clickCallback, value] = useEventCallback((event$: Observable<React.React.SyntheticEvent<HTMLButtonElement>>) => event$.pipe(
-    mapTo(1000)
-  ), 200)
+  const [clickCallback, value] = useEventCallback((event$: Observable<React.React.SyntheticEvent<HTMLButtonElement>>) =>
+    event$.pipe(
+      mapTo(1000)
+    ),
+    200,
+  )
   return (
     // render 200
     // click button
