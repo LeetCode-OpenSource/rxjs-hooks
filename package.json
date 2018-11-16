@@ -2,7 +2,7 @@
   "name": "rxjs-hooks",
   "version": "0.0.1",
   "description": "React hooks for RxJS",
-  "main": "index.js",
+  "main": "esm/index.js",
   "author": "LongYinan <lynweklm@gmail.com>",
   "license": "MIT",
   "scripts": {

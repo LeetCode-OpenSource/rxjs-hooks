@@ -17,13 +17,13 @@ export function useEventCallback<T, U = void>(
   useEffect(
     () => {
       const event$ = new Subject<SyntheticEvent<T>>()
-      function clickCallback(e: SyntheticEvent<T>) {
+      function eventCallback(e: SyntheticEvent<T>) {
         return event$.next(e)
       }
-      setState([clickCallback, initialValue])
+      setState([eventCallback, initialValue])
       const value$ = callback(event$)
       const subscription = value$.subscribe((value) => {
-        setState([clickCallback, value])
+        setState([eventCallback, value])
       })
       return () => subscription.unsubscribe()
     },
