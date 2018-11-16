@@ -106,7 +106,7 @@ import { useEventCallback } from 'rxjs-hooks'
 import { mapTo } from 'rxjs/operators'
 
 function App() {
-  const [clickCallback, value] = useEventCallback((event$: Observable<React.React.SyntheticEvent<HTMLButtonElement>>) =>
+  const [clickCallback, value] = useEventCallback((event$: Observable<React.SyntheticEvent<HTMLButtonElement>>) =>
     event$.pipe(
       mapTo(1000)
     )
@@ -134,7 +134,7 @@ import { useEventCallback } from 'rxjs-hooks'
 import { mapTo } from 'rxjs/operators'
 
 function App() {
-  const [clickCallback, value] = useEventCallback((event$: Observable<React.React.SyntheticEvent<HTMLButtonElement>>) =>
+  const [clickCallback, value] = useEventCallback((event$: Observable<React.SyntheticEvent<HTMLButtonElement>>) =>
     event$.pipe(
       mapTo(1000)
     ),
