@@ -8,9 +8,8 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest'
   },
-  // testRegex: '/__test__/.*\\.spec\\.tsx?$',
+  testRegex: '/__test__/.*\\.spec\\.tsx?$',
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/__test__/**'],
-  coverageReporters: ['lcov', 'html'],
-  preset: 'ts-jest'
+  coverageReporters: ['lcov', 'html']
 }
