@@ -17,7 +17,9 @@ export function useEventCallback<T, U = void>(
   useEffect(
     () => {
       const event$ = new Subject<SyntheticEvent<T>>()
-      const clickCallback = (e: SyntheticEvent<T>) => event$.next(e)
+      function clickCallback(e: SyntheticEvent<T>) {
+        return event$.next(e)
+      }
       setState([clickCallback, initialValue])
       const value$ = callback(event$)
       const subscription = value$.subscribe((value) => {

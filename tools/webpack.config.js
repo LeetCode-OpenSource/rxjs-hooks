@@ -45,8 +45,6 @@ module.exports = {
   plugins: [
     new webpack.NamedModulesPlugin(),
 
-    new webpack.HotModuleReplacementPlugin(),
-
     new HappyPack({
       id: 'sourcemap',
       loaders: ['source-map-loader'],

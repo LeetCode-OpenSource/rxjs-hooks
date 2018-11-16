@@ -8,27 +8,36 @@
   "scripts": {
     "build": "rm -rf esm && tsc -p src/tsconfig.json --outDir esm",
     "lint": "tslint -c tslint.json -p src/tsconfig.json",
-    "start": "webpack-dev-server --progress --color"
+    "start": "webpack-dev-server --config ./tools/webpack.config.js --progress --color",
+    "test": "NODE_ENV=test jest --no-cache --ci"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:LeetCode-OpenSource/rxjs-hooks.git"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.9",
     "@types/lodash": "^4.14.118",
     "@types/react-dom": "^16.0.9",
+    "@types/react-test-renderer": "^16.0.3",
+    "@types/sinon": "^5.0.5",
+    "@types/sinon-chai": "^3.2.0",
     "@types/webpack": "^4.4.19",
     "fork-ts-checker-webpack-plugin": "^0.4.15",
     "happypack": "^5.0.0",
     "html-webpack-plugin": "^3.2.0",
     "husky": "^1.1.4",
+    "jest": "^23.6.0",
     "lint-staged": "^8.0.4",
     "prettier": "^1.15.2",
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
+    "react-test-renderer": "^16.7.0-alpha.2",
     "rxjs": "^6.3.3",
+    "sinon": "^7.1.1",
     "source-map-loader": "^0.2.4",
     "standard": "^12.0.1",
+    "ts-jest": "^23.10.4",
     "ts-loader": "^5.3.0",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.16.0",
