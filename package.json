@@ -5,6 +5,8 @@
   "main": "esm/index.js",
   "author": "LongYinan <lynweklm@gmail.com>",
   "license": "MIT",
+  "typings": "esm/index.d.ts",
+  "sideEffects": false,
   "scripts": {
     "build": "rm -rf esm && tsc -p src/tsconfig.json --outDir esm",
     "lint": "tslint -c tslint.json -p src/tsconfig.json",
