@@ -1,22 +1,12 @@
-import { Observable, BehaviorSubject, Subject } from 'rxjs'
+import { Observable, BehaviorSubject } from 'rxjs'
 import { useState, useEffect, useMemo } from 'react'
-
-const PREFIX = '__SUBJECT__'
-
-const propsSubjects: {
-  [index: string]: Subject<any> | null
-} = {}
-
-let subjectId = 0
-
-const concatSubjectKey = (id: number) => `${PREFIX}${id}`
 
 export type InputFactory<T, U = undefined> = U extends undefined
   ? () => Observable<T>
   : (props$: Observable<U>) => Observable<T>
 
-export function useObservable<T, U = undefined>(inputFactory: InputFactory<T, U>): T | null
-export function useObservable<T, U = undefined>(inputFactory: InputFactory<T, U>, initialState: T): T
+export function useObservable<T>(inputFactory: InputFactory<T>): T | null
+export function useObservable<T>(inputFactory: InputFactory<T>, initialState: T): T
 export function useObservable<T, U extends ReadonlyArray<any>>(
   inputFactory: InputFactory<T, U>,
   initialState: T,
@@ -28,36 +18,26 @@ export function useObservable<T, U extends ReadonlyArray<any> | undefined>(
   initialState?: T,
   inputs?: U,
 ): T | null {
-  const [state, setState] = useState<[T | null, number]>([initialState || null, 0])
-  if (inputs) {
-    useMemo(
-      () => {
-        const props$ = propsSubjects[concatSubjectKey(state[1])]
-        if (props$) {
-          props$.next(inputs)
-        }
-      },
-      inputs as ReadonlyArray<any>,
-    )
-  }
+  const [inputs$] = useState(new BehaviorSubject<U | undefined>(inputs))
+  const [state, setState] = useState(typeof initialState !== 'undefined' ? initialState : null)
+
   useEffect(
     () => {
-      const props$ = new BehaviorSubject<U>(inputs as U)
-      const input$ = (inputFactory as (...args: any[]) => Observable<T>)(
-        typeof inputs !== 'undefined' ? props$ : void 0,
+      const output$ = (inputFactory as (inputs$?: Observable<U | undefined>) => Observable<T>)(
+        typeof inputs !== 'undefined' ? inputs$ : void 0,
       )
-      subjectId++
-      const subscription = input$.subscribe((value) => {
-        setState([value, subjectId])
-      })
-      const subjectKey = concatSubjectKey(subjectId)
-      propsSubjects[subjectKey] = props$
-      return () => {
-        subscription.unsubscribe()
-        propsSubjects[subjectKey] = null
-      }
+      const subscription = output$.subscribe((value) => setState(value))
+      return () => subscription.unsubscribe()
     },
-    [0], // immutable forever
+    [], // immutable forever
   )
-  return state[0]
+
+  useMemo(
+    () => {
+      inputs$.next(inputs)
+    },
+    (inputs || []) as ReadonlyArray<any>,
+  )
+
+  return state
 }
