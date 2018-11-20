@@ -2,6 +2,12 @@
 [![CircleCI](https://circleci.com/gh/LeetCode-OpenSource/rxjs-hooks.svg?style=svg)](https://circleci.com/gh/LeetCode-OpenSource/rxjs-hooks)
 [![Coverage Status](https://coveralls.io/repos/github/LeetCode-OpenSource/rxjs-hooks/badge.svg?branch=master)](https://coveralls.io/github/LeetCode-OpenSource/rxjs-hooks?branch=master) [![Greenkeeper badge](https://badges.greenkeeper.io/LeetCode-OpenSource/rxjs-hooks.svg)](https://greenkeeper.io/)
 
+- [Installation](#installation)
+- [Demo](#quick-look)
+- [Apis](#apis)
+  1. [useObservable](#useobservable)
+  2. [useEventCallback](#useeventcallback)
+  
 ## Installation
 
 Using npm:
