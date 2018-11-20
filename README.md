@@ -66,7 +66,7 @@ function App() {
       <h1>"{description}" was clicked.</h1>
       <button onClick={clickCallback}>click me</button>
       <button onClick={clickCallback}>click you</button>
-      <button onClick={clickCallback}>click he</button>
+      <button onClick={clickCallback}>click him</button>
     </div>
   );
 }
