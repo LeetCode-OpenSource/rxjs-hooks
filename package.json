@@ -26,7 +26,7 @@
     "@types/sinon-chai": "^3.2.1",
     "@types/webpack": "^4.4.19",
     "coveralls": "^3.0.2",
-    "fork-ts-checker-webpack-plugin": "^0.4.15",
+    "fork-ts-checker-webpack-plugin": "^0.5.0",
     "happypack": "^5.0.0",
     "html-webpack-plugin": "^3.2.0",
     "husky": "^1.1.4",
