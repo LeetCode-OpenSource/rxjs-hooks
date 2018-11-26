@@ -81,7 +81,7 @@ declare function useObservable<T>(sourceFactory: () => Observable<T>): T | null
 
 declare function useObservable<T>(sourceFactory: () => Observable<T>, initialState: T): T
 
-declare function useObservable<T, U>(sourceFactory: (props$: Observable<U>) => Observable<T>, initialState: T, inputs: U): T
+declare function useObservable<T, U>(sourceFactory: (inputs$: Observable<U>) => Observable<T>, initialState: T, inputs: U): T
 ```
 
 #### Examples:
@@ -133,7 +133,7 @@ import { of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 function App(props: { foo: number }) {
-  const value = useObservable((props$) => props$.pipe(
+  const value = useObservable((inputs$) => inputs$.pipe(
     map(([val]) => val + 1),
   ), 200, [props.foo])
   return (
