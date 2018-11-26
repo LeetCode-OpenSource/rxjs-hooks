@@ -77,11 +77,13 @@ function App() {
 ### `useObservable`
 
 ```tsx
-declare function useObservable<T>(sourceFactory: () => Observable<T>): T | null
+declare type InputFactory<T, U = undefined> = U extends undefined
+  ? (state$: Observable<T>) => Observable<T>
+  : (inputs$: Observable<U>, state$: Observable<T>) => Observable<T>
 
-declare function useObservable<T>(sourceFactory: () => Observable<T>, initialState: T): T
-
-declare function useObservable<T, U>(sourceFactory: (inputs$: Observable<U>) => Observable<T>, initialState: T, inputs: U): T
+declare function useObservable<T>(inputFactory: InputFactory<T>): T | null
+declare function useObservable<T>(inputFactory: InputFactory<T>, initialState: T): T
+declare function useObservable<T, U>(inputFactory: InputFactory<T, U>, initialState: T, inputs: U): T
 ```
 
 #### Examples:
@@ -147,24 +149,62 @@ ReactDOM.render(<App foo={1000} />, document.querySelector('#app'))
 ReactDOM.render(<App foo={2000} />, document.querySelector('#app'))
 ```
 
+**useObservable with state$**
+
+[live demo](https://codesandbox.io/s/7jwv36w876)
+
+```tsx
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { useObservable } from 'rxjs-hooks'
+import { interval } from 'rxjs'
+import { map, withLatestFrom } from 'rxjs/operators'
+
+function App() {
+  const value = useObservable((state$) => interval(1000).pipe(
+    withLatestFrom(state$),
+    map(([_num, state]) => state * state),
+  ), 2)
+  return (
+    // 2
+    // 4
+    // 16
+    // 256
+    // ...
+    <h1>{value}</h1>
+  )
+}
+
+ReactDOM.render(<App />, document.querySelector('#root'))
+```
+
 ### `useEventCallback`
 
 ```tsx
-declare type EventCallbackState<T, U> = [
-  ((e: SyntheticEvent<T>) => void) | typeof noop,
-  U
-]
-declare type EventCallback<T, U> = (
-  eventSource$: Observable<SyntheticEvent<T>>
-) => Observable<U>
+declare type VoidAsNull<T> = T extends void ? null : T
 
-declare function useEventCallback<T, U = void>(
-  callback: EventCallback<T, U>
-): EventCallbackState<T, U | null>
-declare function useEventCallback<T, U = void>(
-  callback: EventCallback<T, U>,
-  initialState: U
-): EventCallbackState<T, U>
+declare type EventCallbackState<_T, E, U, I = void> = [
+  (e: E) => void,
+  [U extends void ? null : U, BehaviorSubject<U | null>, BehaviorSubject<I | null>]
+]
+declare type ReturnedState<T, E, U, I> = [EventCallbackState<T, E, U, I>[0], EventCallbackState<T, E, U, I>[1][0]]
+
+declare type EventCallback<_T, E, U, I> = I extends void
+  ? (eventSource$: Observable<E>, state$: Observable<U>) => Observable<U>
+  : (eventSource$: Observable<E>, inputs$: Observable<I>, state$: Observable<U>) => Observable<U>
+
+declare function useEventCallback<T, E extends SyntheticEvent<T>, U = void>(
+  callback: EventCallback<T, E, U, void>,
+): ReturnedState<T, E, U | null, void>
+declare function useEventCallback<T, E extends SyntheticEvent<T>, U = void>(
+  callback: EventCallback<T, E, U, void>,
+  initialState: U,
+): ReturnedState<T, E, U, void>
+declare function useEventCallback<T, E extends SyntheticEvent<T>, U = void, I = void>(
+  callback: EventCallback<T, E, U, I>,
+  initialState: U,
+  inputs: I,
+): ReturnedState<T, E, U, I>
 ```
 
 #### Examples:
@@ -222,4 +262,102 @@ function App() {
 }
 
 ReactDOM.render(<App />, document.querySelector('#app'))
+```
+
+**With state$:**
+
+[live demo](https://codesandbox.io/s/m95lz934x)
+
+```tsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { useEventCallback } from "rxjs-hooks";
+import { map, withLatestFrom } from "rxjs/operators";
+
+function App() {
+  const [clickCallback, [description, x, y, prevDescription]] = useEventCallback(
+    (event$, state$) =>
+      event$.pipe(
+        withLatestFrom(state$),
+        map(([event, state]) => [
+           event.target.innerHTML,
+           event.clientX,
+           event.clientY,
+          state[0],
+        ])
+      ),
+    ["nothing", 0, 0, "nothing"]
+  );
+
+  return (
+    <div className="App">
+      <h1>
+        click position: {x}, {y}
+      </h1>
+      <h1>"{description}" was clicked.</h1>
+      <h1>"{prevDescription}" was clicked previously.</h1>
+      <button onClick={clickCallback}>click me</button>
+      <button onClick={clickCallback}>click you</button>
+      <button onClick={clickCallback}>click him</button>
+    </div>
+  );
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+```
+
+**A complex example: useEventCallback with both inputs$ and state$**
+
+[live demo](https://codesandbox.io/s/n1pn02jxym)
+
+```tsx
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import { useEventCallback } from "rxjs-hooks";
+import { map, withLatestFrom, combineLatest } from "rxjs/operators";
+
+import "./styles.css";
+
+function App() {
+  const [count, setCount] = useState(0);
+  const [clickCallback, [description, x, y, prevDesc]] = useEventCallback(
+    (event$, inputs$, state$) =>
+      event$.pipe(
+        map(event => [event.target.innerHTML, event.clientX, event.clientY]),
+        combineLatest(inputs$),
+        withLatestFrom(state$),
+        map(([eventAndInput, state]) => {
+          const [[text, x, y], [count]] = eventAndInput;
+          const prevDescription = state[0];
+          return [text, x + count, y + count, prevDescription];
+        })
+      ),
+    ["nothing", 0, 0, "nothing"],
+    [count]
+  );
+
+  return (
+    <div className="App">
+      <h1>
+        click position: {x}, {y}
+      </h1>
+      <h1>"{description}" was clicked.</h1>
+      <h1>"{prevDesc}" was clicked previously.</h1>
+      <button onClick={clickCallback}>click me</button>
+      <button onClick={clickCallback}>click you</button>
+      <button onClick={clickCallback}>click him</button>
+      <div>
+        <p>
+          click buttons above, and then click this `+++` button, the position
+          numbers will grow.
+        </p>
+        <button onClick={() => setCount(count + 1)}>+++</button>
+      </div>
+    </div>
+  );
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
 ```
