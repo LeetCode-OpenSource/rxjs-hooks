@@ -10,11 +10,17 @@ export function useObservable<T>(inputFactory: InputFactory<T>, initialState: T)
 export function useObservable<T, U>(inputFactory: InputFactory<T, U>, initialState: T, inputs: U): T
 
 export function useObservable<T, U>(inputFactory: InputFactory<T, U>, initialState?: T, inputs?: U): T | null {
-  const stateSubject$ = new BehaviorSubject<T | undefined>(initialState)
-  const inputSubject$ = new BehaviorSubject<U | undefined>(inputs)
   const [state, setState] = useState(typeof initialState !== 'undefined' ? initialState : null)
-  const [state$] = useState(stateSubject$)
-  const [inputs$] = useState(inputSubject$)
+
+  const { state$, inputs$ } = useMemo(() => {
+    const stateSubject$ = new BehaviorSubject<T | undefined>(initialState)
+    const inputSubject$ = new BehaviorSubject<U | undefined>(inputs)
+
+    return {
+      state$: stateSubject$,
+      inputs$: inputSubject$,
+    }
+  }, [])
 
   useMemo(() => {
     inputs$.next(inputs)
