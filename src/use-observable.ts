@@ -1,20 +1,30 @@
 import { Observable, BehaviorSubject } from 'rxjs'
 import { useState, useEffect, useMemo } from 'react'
 
-export type InputFactory<T, U = undefined> = U extends undefined
-  ? (state$: Observable<T>) => Observable<T>
-  : (inputs$: Observable<U>, state$: Observable<T>) => Observable<T>
+export type InputFactory<State, Inputs = undefined> = Inputs extends undefined
+  ? (state$: Observable<State>) => Observable<State>
+  : (inputs$: Observable<RestrictArray<Inputs>>, state$: Observable<State>) => Observable<State>
 
-export function useObservable<T>(inputFactory: InputFactory<T>): T | null
-export function useObservable<T>(inputFactory: InputFactory<T>, initialState: T): T
-export function useObservable<T, U>(inputFactory: InputFactory<T, U>, initialState: T, inputs: U): T
+export type RestrictArray<T> = T extends any[] ? T : []
 
-export function useObservable<T, U>(inputFactory: InputFactory<T, U>, initialState?: T, inputs?: U): T | null {
+export function useObservable<State>(inputFactory: InputFactory<State>): State | null
+export function useObservable<State>(inputFactory: InputFactory<State>, initialState: State): State
+export function useObservable<State, Inputs>(
+  inputFactory: InputFactory<State, Inputs>,
+  initialState: State,
+  inputs: RestrictArray<Inputs>,
+): State
+
+export function useObservable<State, Inputs extends ReadonlyArray<any>>(
+  inputFactory: InputFactory<State, Inputs>,
+  initialState?: State,
+  inputs?: RestrictArray<Inputs>,
+): State | null {
   const [state, setState] = useState(typeof initialState !== 'undefined' ? initialState : null)
 
   const { state$, inputs$ } = useMemo(() => {
-    const stateSubject$ = new BehaviorSubject<T | undefined>(initialState)
-    const inputSubject$ = new BehaviorSubject<U | undefined>(inputs)
+    const stateSubject$ = new BehaviorSubject<State | undefined>(initialState)
+    const inputSubject$ = new BehaviorSubject<RestrictArray<Inputs> | undefined>(inputs)
 
     return {
       state$: stateSubject$,
@@ -24,18 +34,20 @@ export function useObservable<T, U>(inputFactory: InputFactory<T, U>, initialSta
 
   useMemo(() => {
     inputs$.next(inputs)
-  }, ((inputs as unknown) as ReadonlyArray<any>) || [])
+  }, inputs || [])
 
   useEffect(
     () => {
-      let output$: BehaviorSubject<T>
+      let output$: BehaviorSubject<State>
       if (inputs) {
         output$ = (inputFactory as (
-          inputs$: Observable<U | undefined>,
-          state$: Observable<T | undefined>,
-        ) => Observable<T>)(inputs$, state$) as BehaviorSubject<T>
+          inputs$: Observable<RestrictArray<Inputs> | undefined>,
+          state$: Observable<State | undefined>,
+        ) => Observable<State>)(inputs$, state$) as BehaviorSubject<State>
       } else {
-        output$ = (inputFactory as (state$: Observable<T | undefined>) => Observable<T>)(state$) as BehaviorSubject<T>
+        output$ = (inputFactory as (state$: Observable<State | undefined>) => Observable<State>)(
+          state$,
+        ) as BehaviorSubject<State>
       }
       const subscription = output$.subscribe((value) => {
         state$.next(value)
