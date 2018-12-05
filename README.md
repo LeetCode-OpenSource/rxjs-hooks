@@ -77,13 +77,18 @@ function App() {
 ### `useObservable`
 
 ```tsx
-declare type InputFactory<T, U = undefined> = U extends undefined
-  ? (state$: Observable<T>) => Observable<T>
-  : (inputs$: Observable<U>, state$: Observable<T>) => Observable<T>
+type RestrictArray<T> = T extends any[] ? T : []
+type InputFactory<State, Inputs = undefined> = Inputs extends undefined
+  ? (state$: Observable<State>) => Observable<State>
+  : (inputs$: Observable<RestrictArray<Inputs>>, state$: Observable<State>) => Observable<State>
 
-declare function useObservable<T>(inputFactory: InputFactory<T>): T | null
-declare function useObservable<T>(inputFactory: InputFactory<T>, initialState: T): T
-declare function useObservable<T, U>(inputFactory: InputFactory<T, U>, initialState: T, inputs: U): T
+declare function useObservable<State>(inputFactory: InputFactory<State>): State | null
+declare function useObservable<State>(inputFactory: InputFactory<State>, initialState: State): State
+declare function useObservable<State, Inputs>(
+  inputFactory: InputFactory<State, Inputs>,
+  initialState: State,
+  inputs: RestrictArray<Inputs>,
+): State
 ```
 
 #### Examples:
@@ -181,30 +186,38 @@ ReactDOM.render(<App />, document.querySelector('#root'))
 ### `useEventCallback`
 
 ```tsx
-declare type VoidAsNull<T> = T extends void ? null : T
+type RestrictArray<T> = T extends any[] ? T : []
+type VoidAsNull<T> = T extends void ? null : T
 
-declare type EventCallbackState<_T, E, U, I = void> = [
-  (e: E) => void,
-  [U extends void ? null : U, BehaviorSubject<U | null>, BehaviorSubject<I | null>]
+type EventCallbackState<EventValue, State, Inputs = void> = [
+  (val: EventValue) => void,
+  [State extends void ? null : State, BehaviorSubject<State | null>, BehaviorSubject<RestrictArray<Inputs> | null>]
 ]
-declare type ReturnedState<T, E, U, I> = [EventCallbackState<T, E, U, I>[0], EventCallbackState<T, E, U, I>[1][0]]
+type ReturnedState<EventValue, State, Inputs> = [
+  EventCallbackState<EventValue, State, Inputs>[0],
+  EventCallbackState<EventValue, State, Inputs>[1][0]
+]
 
-declare type EventCallback<_T, E, U, I> = I extends void
-  ? (eventSource$: Observable<E>, state$: Observable<U>) => Observable<U>
-  : (eventSource$: Observable<E>, inputs$: Observable<I>, state$: Observable<U>) => Observable<U>
+type EventCallback<EventValue, State, Inputs> = Inputs extends void
+  ? (eventSource$: Observable<EventValue>, state$: Observable<State>) => Observable<State>
+  : (
+      eventSource$: Observable<EventValue>,
+      inputs$: Observable<RestrictArray<Inputs>>,
+      state$: Observable<State>,
+    ) => Observable<State>
 
-declare function useEventCallback<T, E extends SyntheticEvent<T>, U = void>(
-  callback: EventCallback<T, E, U, void>,
-): ReturnedState<T, E, U | null, void>
-declare function useEventCallback<T, E extends SyntheticEvent<T>, U = void>(
-  callback: EventCallback<T, E, U, void>,
-  initialState: U,
-): ReturnedState<T, E, U, void>
-declare function useEventCallback<T, E extends SyntheticEvent<T>, U = void, I = void>(
-  callback: EventCallback<T, E, U, I>,
-  initialState: U,
-  inputs: I,
-): ReturnedState<T, E, U, I>
+declare function useEventCallback<EventValue, State = void>(
+  callback: EventCallback<EventValue, State, void>,
+): ReturnedState<EventValue, State | null, void>
+declare function useEventCallback<EventValue, State = void>(
+  callback: EventCallback<EventValue, State, void>,
+  initialState: State,
+): ReturnedState<EventValue, State, void>
+declare function useEventCallback<EventValue, State = void, Inputs = void>(
+  callback: EventCallback<EventValue, State, Inputs>,
+  initialState: State,
+  inputs: RestrictArray<Inputs>,
+): ReturnedState<EventValue, State, Inputs>
 ```
 
 #### Examples:
