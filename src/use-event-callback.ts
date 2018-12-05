@@ -1,41 +1,48 @@
-import { useEffect, useMemo, useState, SyntheticEvent } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Observable, BehaviorSubject, Subject, noop } from 'rxjs'
 
-export type VoidAsNull<T> = T extends void ? null : T
+import { RestrictArray, VoidAsNull } from './type'
 
-export type EventCallbackState<_T, E, U, I = void> = [
-  (e: E) => void,
-  [U extends void ? null : U, BehaviorSubject<U | null>, BehaviorSubject<I | null>]
+export type EventCallbackState<EventValue, State, Inputs = void> = [
+  (val: EventValue) => void,
+  [State extends void ? null : State, BehaviorSubject<State | null>, BehaviorSubject<RestrictArray<Inputs> | null>]
 ]
-export type ReturnedState<T, E, U, I> = [EventCallbackState<T, E, U, I>[0], EventCallbackState<T, E, U, I>[1][0]]
+export type ReturnedState<EventValue, State, Inputs> = [
+  EventCallbackState<EventValue, State, Inputs>[0],
+  EventCallbackState<EventValue, State, Inputs>[1][0]
+]
 
-export type EventCallback<_T, E, U, I> = I extends void
-  ? (eventSource$: Observable<E>, state$: Observable<U>) => Observable<U>
-  : (eventSource$: Observable<E>, inputs$: Observable<I>, state$: Observable<U>) => Observable<U>
+export type EventCallback<EventValue, State, Inputs> = Inputs extends void
+  ? (eventSource$: Observable<EventValue>, state$: Observable<State>) => Observable<State>
+  : (
+      eventSource$: Observable<EventValue>,
+      inputs$: Observable<RestrictArray<Inputs>>,
+      state$: Observable<State>,
+    ) => Observable<State>
 
-export function useEventCallback<T, E extends SyntheticEvent<T>, U = void>(
-  callback: EventCallback<T, E, U, void>,
-): ReturnedState<T, E, U | null, void>
-export function useEventCallback<T, E extends SyntheticEvent<T>, U = void>(
-  callback: EventCallback<T, E, U, void>,
-  initialState: U,
-): ReturnedState<T, E, U, void>
-export function useEventCallback<T, E extends SyntheticEvent<T>, U = void, I = void>(
-  callback: EventCallback<T, E, U, I>,
-  initialState: U,
-  inputs: I,
-): ReturnedState<T, E, U, I>
+export function useEventCallback<EventValue, State = void>(
+  callback: EventCallback<EventValue, State, void>,
+): ReturnedState<EventValue, State | null, void>
+export function useEventCallback<EventValue, State = void>(
+  callback: EventCallback<EventValue, State, void>,
+  initialState: State,
+): ReturnedState<EventValue, State, void>
+export function useEventCallback<EventValue, State = void, Inputs = void>(
+  callback: EventCallback<EventValue, State, Inputs>,
+  initialState: State,
+  inputs: RestrictArray<Inputs>,
+): ReturnedState<EventValue, State, Inputs>
 
-export function useEventCallback<T, E extends SyntheticEvent<T>, U = void, I = void>(
-  callback: EventCallback<T, E, U, I>,
-  initialState?: U,
-  inputs?: I,
-): ReturnedState<T, E, U | null, I> {
-  const initialValue = (typeof initialState !== 'undefined' ? initialState : null) as VoidAsNull<U>
-  const inputSubject$ = new BehaviorSubject<I | null>(typeof inputs === 'undefined' ? null : inputs)
-  const stateSubject$ = new BehaviorSubject<U | null>(initialValue)
+export function useEventCallback<EventValue, State = void, Inputs = void>(
+  callback: EventCallback<EventValue, State, Inputs>,
+  initialState?: State,
+  inputs?: RestrictArray<Inputs>,
+): ReturnedState<EventValue, State | null, Inputs> {
+  const initialValue = (typeof initialState !== 'undefined' ? initialState : null) as VoidAsNull<State>
+  const inputSubject$ = new BehaviorSubject<RestrictArray<Inputs> | null>(typeof inputs === 'undefined' ? null : inputs)
+  const stateSubject$ = new BehaviorSubject<State | null>(initialValue)
   const [state, setState] = useState(initialValue)
-  const [returnedCallback, setEventCallback] = useState<(e: E) => void>(noop)
+  const [returnedCallback, setEventCallback] = useState<(val: EventValue) => void>(() => noop)
   const [state$] = useState(stateSubject$)
   const [inputs$] = useState(inputSubject$)
 
@@ -45,22 +52,22 @@ export function useEventCallback<T, E extends SyntheticEvent<T>, U = void, I = v
 
   useEffect(
     () => {
-      const event$ = new Subject<E>()
-      function eventCallback(e: E) {
+      const event$ = new Subject<EventValue>()
+      function eventCallback(e: EventValue) {
         return event$.next(e)
       }
       setState(initialValue)
       setEventCallback(() => eventCallback)
-      let value$: Observable<U>
+      let value$: Observable<State>
 
       if (!inputs) {
-        value$ = (callback as EventCallback<T, E, U, void>)(event$, state$ as Observable<U>)
+        value$ = (callback as EventCallback<EventValue, State, void>)(event$, state$ as Observable<State>)
       } else {
-        value$ = (callback as any)(event$, inputs$ as Observable<any>, state$ as Observable<U>)
+        value$ = (callback as any)(event$, inputs$ as Observable<Inputs>, state$ as Observable<State>)
       }
       const subscription = value$.subscribe((value) => {
         state$.next(value)
-        setState(value as VoidAsNull<U>)
+        setState(value as VoidAsNull<State>)
       })
       return () => {
         subscription.unsubscribe()

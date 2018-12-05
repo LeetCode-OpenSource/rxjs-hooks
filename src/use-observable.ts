@@ -1,11 +1,11 @@
 import { Observable, BehaviorSubject } from 'rxjs'
 import { useState, useEffect, useMemo } from 'react'
 
+import { RestrictArray } from './type'
+
 export type InputFactory<State, Inputs = undefined> = Inputs extends undefined
   ? (state$: Observable<State>) => Observable<State>
   : (inputs$: Observable<RestrictArray<Inputs>>, state$: Observable<State>) => Observable<State>
-
-export type RestrictArray<T> = T extends any[] ? T : []
 
 export function useObservable<State>(inputFactory: InputFactory<State>): State | null
 export function useObservable<State>(inputFactory: InputFactory<State>, initialState: State): State
