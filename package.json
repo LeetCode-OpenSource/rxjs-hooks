@@ -22,7 +22,7 @@
     "@types/lodash": "^4.14.118",
     "@types/react-dom": "^16.0.9",
     "@types/react-test-renderer": "^16.0.3",
-    "@types/sinon": "^5.0.6",
+    "@types/sinon": "^7.0.0",
     "@types/sinon-chai": "^3.2.1",
     "@types/webpack": "^4.4.19",
     "coveralls": "^3.0.2",
