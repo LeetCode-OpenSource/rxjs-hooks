@@ -33,7 +33,7 @@
     "jest": "^23.6.0",
     "lint-staged": "^8.0.5",
     "prettier": "^1.15.2",
-    "react": "16.7.0-alpha.2",
+    "react": "16.7.0",
     "react-dom": "16.7.0-alpha.2",
     "react-test-renderer": "^16.7.0-alpha.2",
     "rxjs": "^6.3.3",
