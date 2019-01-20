@@ -1,6 +1,6 @@
 import React from 'react'
 import { Observable, of, Observer } from 'rxjs'
-import { mapTo, delay, withLatestFrom, map } from 'rxjs/operators'
+import { mapTo, delay, withLatestFrom, combineLatest, map } from 'rxjs/operators'
 import { create } from 'react-test-renderer'
 import * as Sinon from 'sinon'
 
@@ -138,7 +138,7 @@ describe('useEventCallback specs', () => {
       _state$: Observable<number>,
     ) =>
       event$.pipe(
-        withLatestFrom(inputs$),
+        combineLatest(inputs$),
         map(([_, [count]]) => {
           return value + count
         }),
@@ -167,6 +167,7 @@ describe('useEventCallback specs', () => {
     button.props.onClick()
     timer.tick(timeToDelay)
     testRenderer.update(<Fixture count={4} />)
+    timer.tick(timeToDelay)
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value + 4}`])
     timer.restore()
   })
