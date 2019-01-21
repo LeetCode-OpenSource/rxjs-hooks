@@ -32,7 +32,7 @@ export function useObservable<State, Inputs extends ReadonlyArray<any>>(
     }
   }, [])
 
-  useMemo(() => {
+  useEffect(() => {
     inputs$.next(inputs)
   }, inputs || [])
 

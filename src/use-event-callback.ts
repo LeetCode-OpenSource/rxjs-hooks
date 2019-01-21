@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Observable, BehaviorSubject, Subject, noop } from 'rxjs'
 
 import { RestrictArray, VoidAsNull } from './type'
@@ -46,9 +46,9 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
   const [state$] = useState(stateSubject$)
   const [inputs$] = useState(inputSubject$)
 
-  useMemo(() => {
+  useEffect(() => {
     inputs$.next(inputs!)
-  }, ((inputs as unknown) as ReadonlyArray<any>) || [])
+  }, inputs || [])
 
   useEffect(
     () => {
