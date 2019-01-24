@@ -145,7 +145,7 @@ function App(props: { foo: number }) {
   ), 200, [props.foo])
   return (
     // render three times
-    // 200 and 10001 and 2001
+    // 200 and 1001 and 2001
     <h1>{value}</h1>
   )
 }
