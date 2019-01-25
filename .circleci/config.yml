@@ -48,7 +48,7 @@ jobs:
           at: ~/rxjs-hooks
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run: |
-          if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
+          if git log -1 --pretty=%B | grep "^v?[0-9]\+\.[0-9]\+\.[0-9]\+$";
           then
             npm publish
           else
