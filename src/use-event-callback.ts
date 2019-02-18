@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Observable, BehaviorSubject, Subject, noop } from 'rxjs'
 
-import { RestrictArray, VoidAsNull } from './type'
+import { RestrictArray, VoidAsNull, Not } from './type'
 
 export type EventCallbackState<EventValue, State, Inputs = void> = [
   (val: EventValue) => void,
@@ -12,13 +12,15 @@ export type ReturnedState<EventValue, State, Inputs> = [
   EventCallbackState<EventValue, State, Inputs>[1][0]
 ]
 
-export type EventCallback<EventValue, State, Inputs> = Inputs extends void
-  ? (eventSource$: Observable<EventValue>, state$: Observable<State>) => Observable<State>
-  : (
-      eventSource$: Observable<EventValue>,
-      inputs$: Observable<RestrictArray<Inputs>>,
-      state$: Observable<State>,
-    ) => Observable<State>
+export type EventCallback<EventValue, State, Inputs> = Not<
+  Inputs extends void ? true : false,
+  (
+    eventSource$: Observable<EventValue>,
+    inputs$: Observable<RestrictArray<Inputs>>,
+    state$: Observable<State>,
+  ) => Observable<State>,
+  (eventSource$: Observable<EventValue>, state$: Observable<State>) => Observable<State>
+>
 
 export function useEventCallback<EventValue>(
   callback: EventCallback<EventValue, void, void>,
