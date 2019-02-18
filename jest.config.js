@@ -2,7 +2,7 @@ module.exports = {
   browser: true,
   verbose: true,
   rootDir: __dirname,
-  setupTestFrameworkScriptFile: '<rootDir>/tools/test-setup.js',
+  setupFilesAfterEnv: ['<rootDir>/tools/test-setup.js'],
   moduleDirectories: ['<rootDir>/node_modules', '<rootDir>/src'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   transform: {
