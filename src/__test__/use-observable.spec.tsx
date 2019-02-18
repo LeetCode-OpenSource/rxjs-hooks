@@ -1,5 +1,5 @@
 import React from 'react'
-import { create } from 'react-test-renderer'
+import { create, act } from 'react-test-renderer'
 import * as Sinon from 'sinon'
 import { of, Observable, Observer, Subject } from 'rxjs'
 
@@ -28,7 +28,7 @@ describe('useObservable specs', () => {
 
     const testRenderer = create(fixtureNode)
     expect(find(testRenderer.root, 'h1').children).toEqual([])
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
 
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value}`])
   })
@@ -44,7 +44,7 @@ describe('useObservable specs', () => {
 
     const testRenderer = create(fixtureNode)
     expect(find(testRenderer.root, 'h1').children).toEqual([`${initialValue}`])
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
 
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value}`])
   })
@@ -102,13 +102,13 @@ describe('useObservable specs', () => {
     const testRenderer = create(<Fixture />)
     expect(spy.callCount).toBe(0)
     expect(find(testRenderer.root, 'h1').children).toEqual([])
-    testRenderer.update(<Fixture />)
+    act(() => testRenderer.update(<Fixture />))
     source$.next(initialValue)
     expect(spy.callCount).toBe(1)
     expect(spy.args[0]).toEqual([initialValue])
     expect(find(testRenderer.root, 'h1').children).toEqual([`${initialValue}`])
 
-    testRenderer.update(<Fixture />)
+    act(() => testRenderer.update(<Fixture />))
     const secondValue = 2000
     source$.next(secondValue)
     expect(spy.callCount).toBe(2)
@@ -146,7 +146,7 @@ describe('useObservable specs', () => {
     expect(find(testRenderer.root, 'h1').children).toEqual([])
     expect(find(testRenderer.root, 'div').children).toEqual([])
     const newProps = { ...props, bar: 'new bar' }
-    testRenderer.update(<Fixture {...newProps} />)
+    act(() => testRenderer.update(<Fixture {...newProps} />))
     // wait useEffect fired
     // https://reactjs.org/docs/hooks-reference.html#timing-of-effects
     timer.tick(timeToDelay)
@@ -156,7 +156,7 @@ describe('useObservable specs', () => {
     expect(find(testRenderer.root, 'div').children).toEqual([`${newProps.baz.foo}`])
 
     const renewProps = { ...props, foo: 1000 }
-    testRenderer.update(<Fixture {...renewProps} />)
+    act(() => testRenderer.update(<Fixture {...renewProps} />))
     timer.tick(timeToDelay)
 
     expect(spy.callCount).toBe(2)

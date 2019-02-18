@@ -1,7 +1,7 @@
 import React from 'react'
 import { Observable, of, Observer } from 'rxjs'
 import { mapTo, delay, withLatestFrom, combineLatest, map } from 'rxjs/operators'
-import { create } from 'react-test-renderer'
+import { create, act } from 'react-test-renderer'
 import * as Sinon from 'sinon'
 
 import { find } from './find'
@@ -27,7 +27,7 @@ describe('useEventCallback specs', () => {
     const Fixture = createFixture(() => of(1))
     const fixtureNode = <Fixture />
     const testRenderer = create(fixtureNode)
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     const button = find(testRenderer.root, 'button')
     expect(button.props.onClick.name).toBe('eventCallback')
   })
@@ -38,7 +38,7 @@ describe('useEventCallback specs', () => {
     const fixtureNode = <Fixture />
     const testRenderer = create(fixtureNode)
     expect(find(testRenderer.root, 'h1').children).toEqual([])
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value}`])
   })
 
@@ -54,11 +54,11 @@ describe('useEventCallback specs', () => {
     )
     const fixtureNode = <Fixture />
     const testRenderer = create(fixtureNode)
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     const button = find(testRenderer.root, 'button')
     button.props.onClick()
     timer.tick(timeToDelay)
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value}`])
     timer.restore()
   })
@@ -79,11 +79,11 @@ describe('useEventCallback specs', () => {
     const fixtureNode = <Fixture />
     const testRenderer = create(fixtureNode)
     expect(find(testRenderer.root, 'h1').children).toEqual([`${initialValue}`])
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     const button = find(testRenderer.root, 'button')
     button.props.onClick()
     timer.tick(timeToDelay)
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value}`])
     timer.restore()
   })
@@ -114,15 +114,15 @@ describe('useEventCallback specs', () => {
     const fixtureNode = <Fixture />
     const testRenderer = create(fixtureNode)
     expect(find(testRenderer.root, 'h1').children).toEqual([`${initialValue}`])
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     const button = find(testRenderer.root, 'button')
     button.props.onClick()
     timer.tick(timeToDelay)
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${initialValue + value}`])
     button.props.onClick()
     timer.tick(timeToDelay)
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${initialValue + value * 2}`])
     timer.restore()
   })
@@ -136,7 +136,7 @@ describe('useEventCallback specs', () => {
       event$: Observable<React.MouseEvent<HTMLButtonElement>>,
       inputs$: Observable<number[]>,
       _state$: Observable<number>,
-    ) =>
+    ): Observable<number> =>
       event$.pipe(
         combineLatest(inputs$),
         map(([_, [count]]) => {
@@ -157,16 +157,16 @@ describe('useEventCallback specs', () => {
     const fixtureNode = <Fixture count={1} />
     const testRenderer = create(fixtureNode)
     expect(find(testRenderer.root, 'h1').children).toEqual([`${initialValue}`])
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     const button = find(testRenderer.root, 'button')
     button.props.onClick()
     timer.tick(timeToDelay)
-    testRenderer.update(fixtureNode)
+    act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value + 1}`])
-    testRenderer.update(<Fixture count={4} />)
+    act(() => testRenderer.update(<Fixture count={4} />))
     button.props.onClick()
     timer.tick(timeToDelay)
-    testRenderer.update(<Fixture count={4} />)
+    act(() => testRenderer.update(<Fixture count={4} />))
     timer.tick(timeToDelay)
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value + 4}`])
     timer.restore()

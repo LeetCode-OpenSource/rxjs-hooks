@@ -20,14 +20,14 @@ export type EventCallback<EventValue, State, Inputs> = Inputs extends void
       state$: Observable<State>,
     ) => Observable<State>
 
-export function useEventCallback<EventValue, State = void>(
-  callback: EventCallback<EventValue, State, void>,
-): ReturnedState<EventValue, State | null, void>
-export function useEventCallback<EventValue, State = void>(
+export function useEventCallback<EventValue>(
+  callback: EventCallback<EventValue, void, void>,
+): ReturnedState<EventValue, void | null, void>
+export function useEventCallback<EventValue, State>(
   callback: EventCallback<EventValue, State, void>,
   initialState: State,
 ): ReturnedState<EventValue, State, void>
-export function useEventCallback<EventValue, State = void, Inputs = void>(
+export function useEventCallback<EventValue, State, Inputs>(
   callback: EventCallback<EventValue, State, Inputs>,
   initialState: State,
   inputs: RestrictArray<Inputs>,
@@ -50,34 +50,31 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
     inputs$.next(inputs!)
   }, inputs || [])
 
-  useEffect(
-    () => {
-      const event$ = new Subject<EventValue>()
-      function eventCallback(e: EventValue) {
-        return event$.next(e)
-      }
-      setState(initialValue)
-      setEventCallback(() => eventCallback)
-      let value$: Observable<State>
+  useEffect(() => {
+    const event$ = new Subject<EventValue>()
+    function eventCallback(e: EventValue) {
+      return event$.next(e)
+    }
+    setState(initialValue)
+    setEventCallback(() => eventCallback)
+    let value$: Observable<State>
 
-      if (!inputs) {
-        value$ = (callback as EventCallback<EventValue, State, void>)(event$, state$ as Observable<State>)
-      } else {
-        value$ = (callback as any)(event$, inputs$ as Observable<Inputs>, state$ as Observable<State>)
-      }
-      const subscription = value$.subscribe((value) => {
-        state$.next(value)
-        setState(value as VoidAsNull<State>)
-      })
-      return () => {
-        subscription.unsubscribe()
-        state$.complete()
-        inputs$.complete()
-        event$.complete()
-      }
-    },
-    [], // immutable forever
-  )
+    if (!inputs) {
+      value$ = (callback as EventCallback<EventValue, State, void>)(event$, state$ as Observable<State>)
+    } else {
+      value$ = (callback as any)(event$, inputs$ as Observable<Inputs>, state$ as Observable<State>)
+    }
+    const subscription = value$.subscribe((value) => {
+      state$.next(value)
+      setState(value as VoidAsNull<State>)
+    })
+    return () => {
+      subscription.unsubscribe()
+      state$.complete()
+      inputs$.complete()
+      event$.complete()
+    }
+  }, []) // immutable forever
 
   return [returnedCallback, state]
 }
