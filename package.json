@@ -28,7 +28,7 @@
     "@types/sinon": "^7.0.6",
     "@types/sinon-chai": "^3.2.2",
     "@types/webpack": "^4.4.24",
-    "coveralls": "^3.0.2",
+    "coveralls": "^3.0.3",
     "fork-ts-checker-webpack-plugin": "^0.5.2",
     "happypack": "^5.0.1",
     "html-webpack-plugin": "^3.2.0",
@@ -40,20 +40,20 @@
     "react-dom": "16.8.3",
     "react-test-renderer": "16.8.3",
     "rxjs": "^6.4.0",
-    "sinon": "^7.2.3",
+    "sinon": "^7.2.4",
     "source-map-loader": "^0.2.4",
     "standard": "^12.0.1",
     "ts-jest": "^24.0.0",
     "ts-loader": "^5.3.3",
-    "tslint": "^5.12.1",
+    "tslint": "^5.13.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0",
     "tslint-react": "^3.6.0",
     "tslint-sonarts": "^1.9.0",
-    "typescript": "3.1.6",
+    "typescript": "^3.3.3",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.1.14"
+    "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
     "tslib": "^1.9.3"
