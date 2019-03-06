@@ -38,7 +38,7 @@
     "prettier": "^1.16.4",
     "react": "16.8.4",
     "react-dom": "16.8.4",
-    "react-test-renderer": "16.8.3",
+    "react-test-renderer": "16.8.4",
     "rxjs": "^6.4.0",
     "sinon": "^7.2.4",
     "source-map-loader": "^0.2.4",
