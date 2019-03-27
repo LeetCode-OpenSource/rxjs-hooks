@@ -3,8 +3,10 @@ import { Observable, BehaviorSubject, Subject, noop } from 'rxjs'
 
 import { RestrictArray, VoidAsNull, Not } from './type'
 
+type VoidableCallback<EventValue> = EventValue extends void ? () => void : (val: EventValue) => void
+
 export type EventCallbackState<EventValue, State, Inputs = void> = [
-  (val: EventValue) => void,
+  VoidableCallback<EventValue>,
   [State extends void ? null : State, BehaviorSubject<State | null>, BehaviorSubject<RestrictArray<Inputs> | null>]
 ]
 export type ReturnedState<EventValue, State, Inputs> = [
@@ -44,7 +46,9 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
   const inputSubject$ = new BehaviorSubject<RestrictArray<Inputs> | null>(typeof inputs === 'undefined' ? null : inputs)
   const stateSubject$ = new BehaviorSubject<State | null>(initialValue)
   const [state, setState] = useState(initialValue)
-  const [returnedCallback, setEventCallback] = useState<(val: EventValue) => void>(() => noop)
+  const [returnedCallback, setEventCallback] = useState<VoidableCallback<EventValue>>(
+    () => noop as VoidableCallback<EventValue>,
+  )
   const [state$] = useState(stateSubject$)
   const [inputs$] = useState(inputSubject$)
 
@@ -58,7 +62,7 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
       return event$.next(e)
     }
     setState(initialValue)
-    setEventCallback(() => eventCallback)
+    setEventCallback(() => eventCallback as VoidableCallback<EventValue>)
     let value$: Observable<State>
 
     if (!inputs) {
