@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject, Subject, noop } from 'rxjs'
 
 import { RestrictArray, VoidAsNull, Not } from './type'
 
-type VoidableCallback<EventValue> = EventValue extends void ? () => void : (val: EventValue) => void
+type VoidableCallback<EventValue> = [EventValue] extends [void] ? () => void : (val: EventValue) => void
 
 export type EventCallbackState<EventValue, State, Inputs = void> = [
   VoidableCallback<EventValue>,
