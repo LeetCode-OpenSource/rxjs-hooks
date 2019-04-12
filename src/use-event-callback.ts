@@ -3,7 +3,14 @@ import { Observable, BehaviorSubject, Subject, noop } from 'rxjs'
 
 import { RestrictArray, VoidAsNull, Not } from './type'
 
-type VoidableCallback<EventValue> = [EventValue] extends [void] ? () => void : (val: EventValue) => void
+// https://stackoverflow.com/questions/55541275/typescript-check-for-the-any-type
+type IfAny<T, Y, N> = 0 extends (1 & T) ? Y : N
+
+type IsAny<T> = IfAny<T, true, false>
+
+type IsVoid<T> = IsAny<T> extends true ? false : [T] extends [void] ? true : false
+
+type VoidableCallback<EventValue> = IsVoid<EventValue> extends true ? () => void : (val: EventValue) => void
 
 export type EventCallbackState<EventValue, State, Inputs = void> = [
   VoidableCallback<EventValue>,
