@@ -374,3 +374,58 @@ function App() {
 const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
 ```
+
+**Example of combining callback observables coming from separate elements - animation with start/stop button and rate controllable via slider**
+
+[live demo](https://codesandbox.io/s/pprzmxy230)
+
+```tsx
+const Animation = ({ frame }) => {
+  const frames = "|/-\\|/-\\|".split("");
+  return (
+    <div>
+      <p>{frames[frame % frames.length]}</p>
+    </div>
+  );
+};
+
+
+const App = () => {
+  const defaultRate = 5;
+
+  const [running, setRunning] = useState(false);
+
+  const [onEvent, frame] = useEventCallback(events$ => {
+    const running$ = events$.pipe(
+      filter(e => e.type === "click"),
+      scan(running => !running, running),
+      startWith(running),
+      tap(setRunning)
+    );
+
+    return events$.pipe(
+      filter(e => e.type === "change"),
+      map(e => parseInt(e.target.value, 10)),
+      startWith(defaultRate),
+      switchMap(i => timer(200, 1000 / i)),
+      withLatestFrom(running$),
+      filter(([_, running]) => running),
+      scan(frame => frame + 1, 0)
+    );
+  });
+
+  return (
+    <div className="App">
+      <button onClick={onEvent}>{running ? "Stop" : "Start"}</button>
+      <input
+        type="range"
+        onChange={onEvent}
+        defaultValue={defaultRate}
+        min="1"
+        max="10"
+      ></input>
+      <Animation frame={frame} />
+    </div>
+  );
+};
+```
