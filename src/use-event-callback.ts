@@ -1,19 +1,10 @@
-import { useEffect, useState } from 'react'
-import { Observable, BehaviorSubject, Subject, noop } from 'rxjs'
+import { useEffect, useState, useCallback } from 'react'
+import { Observable, BehaviorSubject, Subject } from 'rxjs'
 
 import { RestrictArray, VoidAsNull, Not } from './type'
 
-// https://stackoverflow.com/questions/55541275/typescript-check-for-the-any-type
-type IfAny<T, Y, N> = 0 extends (1 & T) ? Y : N
-
-type IsAny<T> = IfAny<T, true, false>
-
-type IsVoid<T> = IsAny<T> extends true ? false : [T] extends [void] ? true : false
-
-type VoidableCallback<EventValue> = IsVoid<EventValue> extends true ? () => void : (val: EventValue) => void
-
 export type EventCallbackState<EventValue, State, Inputs = void> = [
-  VoidableCallback<EventValue>,
+  (e: EventValue) => void,
   [State extends void ? null : State, BehaviorSubject<State | null>, BehaviorSubject<RestrictArray<Inputs> | null>]
 ]
 export type ReturnedState<EventValue, State, Inputs> = [
@@ -53,9 +44,11 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
   const inputSubject$ = new BehaviorSubject<RestrictArray<Inputs> | null>(typeof inputs === 'undefined' ? null : inputs)
   const stateSubject$ = new BehaviorSubject<State | null>(initialValue)
   const [state, setState] = useState(initialValue)
-  const [returnedCallback, setEventCallback] = useState<VoidableCallback<EventValue>>(
-    () => noop as VoidableCallback<EventValue>,
-  )
+  const [event$] = useState(new Subject<EventValue>())
+  function eventCallback(e: EventValue) {
+    return event$.next(e)
+  }
+  const returnedCallback = useCallback(eventCallback, [])
   const [state$] = useState(stateSubject$)
   const [inputs$] = useState(inputSubject$)
 
@@ -64,12 +57,7 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
   }, inputs || [])
 
   useEffect(() => {
-    const event$ = new Subject<EventValue>()
-    function eventCallback(e: EventValue) {
-      return event$.next(e)
-    }
     setState(initialValue)
-    setEventCallback(() => eventCallback as VoidableCallback<EventValue>)
     let value$: Observable<State>
 
     if (!inputs) {
