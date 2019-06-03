@@ -3,8 +3,10 @@ import { Observable, BehaviorSubject, Subject } from 'rxjs'
 
 import { RestrictArray, VoidAsNull, Not } from './type'
 
+export type VoidableEventCallback<EventValue> = EventValue extends void ? () => void : (e: EventValue) => void
+
 export type EventCallbackState<EventValue, State, Inputs = void> = [
-  (e: EventValue) => void,
+  VoidableEventCallback<EventValue>,
   [State extends void ? null : State, BehaviorSubject<State | null>, BehaviorSubject<RestrictArray<Inputs> | null>]
 ]
 export type ReturnedState<EventValue, State, Inputs> = [
@@ -77,5 +79,5 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
     }
   }, []) // immutable forever
 
-  return [returnedCallback, state]
+  return [returnedCallback as VoidableEventCallback<EventValue>, state]
 }
