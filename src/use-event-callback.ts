@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { Observable, BehaviorSubject, Subject } from 'rxjs'
 
 import { RestrictArray, VoidAsNull, Not } from './type'
@@ -24,6 +24,18 @@ export type EventCallback<EventValue, State, Inputs> = Not<
   (eventSource$: Observable<EventValue>, state$: Observable<State>) => Observable<State>
 >
 
+function initEvent$<EventValue>() {
+  return new Subject<EventValue>()
+}
+
+function initInput$<Inputs>(inputs?: RestrictArray<Inputs>) {
+  return new BehaviorSubject<RestrictArray<Inputs> | null>(inputs === undefined ? null : inputs)
+}
+
+function initState$<State>(initialValue: VoidAsNull<State>) {
+  return new BehaviorSubject<State | null>(initialValue)
+}
+
 export function useEventCallback<EventValue>(
   callback: EventCallback<EventValue, void, void>,
 ): ReturnedState<EventValue, void | null, void>
@@ -42,17 +54,12 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
   initialState?: State,
   inputs?: RestrictArray<Inputs>,
 ): ReturnedState<EventValue, State | null, Inputs> {
-  const initialValue = (typeof initialState !== 'undefined' ? initialState : null) as VoidAsNull<State>
-  const inputSubject$ = new BehaviorSubject<RestrictArray<Inputs> | null>(typeof inputs === 'undefined' ? null : inputs)
-  const stateSubject$ = new BehaviorSubject<State | null>(initialValue)
+  const initialValue = (initialState !== undefined ? initialState : null) as VoidAsNull<State>
   const [state, setState] = useState(initialValue)
-  const [event$] = useState(new Subject<EventValue>())
-  function eventCallback(e: EventValue) {
-    return event$.next(e)
-  }
-  const returnedCallback = useCallback(eventCallback, [])
-  const [state$] = useState(stateSubject$)
-  const [inputs$] = useState(inputSubject$)
+  const state$ = useMemo(() => initState$(initialValue), [])
+  const inputs$ = useMemo(() => initInput$(inputs), [])
+  const event$ = useMemo(() => initEvent$<EventValue>(), [])
+  const returnedCallback = useCallback((e: EventValue) => event$.next(e), [event$])
 
   useEffect(() => {
     inputs$.next(inputs!)
