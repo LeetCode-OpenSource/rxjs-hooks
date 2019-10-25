@@ -88,6 +88,7 @@ declare function useObservable<State, Inputs>(
   inputFactory: InputFactory<State, Inputs>,
   initialState: State,
   inputs: RestrictArray<Inputs>,
+  deps: readonly any[],
 ): State
 ```
 
@@ -181,6 +182,30 @@ function App() {
 }
 
 ReactDOM.render(<App />, document.querySelector('#root'))
+```
+
+**Refresh ovbservable on dependency change**
+
+```tsx
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { useObservable } from 'rxjs-hooks'
+import { from } from 'rxjs'
+import { map, take } from 'rxjs/operators'
+
+function App(props: { foo: number }) {
+  const value = useObservable(() => from([1, 2, 3, 4]).pipe(
+    map(val => val + props.foo)
+  ), 200, [props.foo])
+  return (
+    // render four times
+    // 2, 4, 5, 6
+    <h1>{value}</h1>
+  )
+}
+
+ReactDOM.render(<App foo={1} />, document.querySelector('#app'))
+ReactDOM.render(<App foo={2} />, document.querySelector('#app'))
 ```
 
 ### `useEventCallback`

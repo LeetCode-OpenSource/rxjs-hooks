@@ -13,12 +13,14 @@ export function useObservable<State, Inputs>(
   inputFactory: InputFactory<State, Inputs>,
   initialState: State,
   inputs: RestrictArray<Inputs>,
+  deps: readonly any[],
 ): State
 
 export function useObservable<State, Inputs extends ReadonlyArray<any>>(
   inputFactory: InputFactory<State, Inputs>,
   initialState?: State,
   inputs?: RestrictArray<Inputs>,
+  deps: readonly any[] = [],
 ): State | null {
   const [state, setState] = useState(typeof initialState !== 'undefined' ? initialState : null)
 
@@ -36,31 +38,28 @@ export function useObservable<State, Inputs extends ReadonlyArray<any>>(
     inputs$.next(inputs)
   }, inputs || [])
 
-  useEffect(
-    () => {
-      let output$: BehaviorSubject<State>
-      if (inputs) {
-        output$ = (inputFactory as (
-          inputs$: Observable<RestrictArray<Inputs> | undefined>,
-          state$: Observable<State | undefined>,
-        ) => Observable<State>)(inputs$, state$) as BehaviorSubject<State>
-      } else {
-        output$ = (inputFactory as (state$: Observable<State | undefined>) => Observable<State>)(
-          state$,
-        ) as BehaviorSubject<State>
-      }
-      const subscription = output$.subscribe((value) => {
-        state$.next(value)
-        setState(value)
-      })
-      return () => {
-        subscription.unsubscribe()
-        inputs$.complete()
-        state$.complete()
-      }
-    },
-    [], // immutable forever
-  )
+  useEffect(() => {
+    let output$: BehaviorSubject<State>
+    if (inputs) {
+      output$ = (inputFactory as (
+        inputs$: Observable<RestrictArray<Inputs> | undefined>,
+        state$: Observable<State | undefined>,
+      ) => Observable<State>)(inputs$, state$) as BehaviorSubject<State>
+    } else {
+      output$ = (inputFactory as (state$: Observable<State | undefined>) => Observable<State>)(
+        state$,
+      ) as BehaviorSubject<State>
+    }
+    const subscription = output$.subscribe((value) => {
+      state$.next(value)
+      setState(value)
+    })
+    return () => {
+      subscription.unsubscribe()
+      inputs$.complete()
+      state$.complete()
+    }
+  }, deps)
 
   return state
 }
