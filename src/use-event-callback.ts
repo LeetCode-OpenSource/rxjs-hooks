@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import useConstant from 'use-constant'
 import { Observable, BehaviorSubject, Subject } from 'rxjs'
 
 import { RestrictArray, VoidAsNull, Not } from './type'
@@ -7,11 +8,11 @@ export type VoidableEventCallback<EventValue> = EventValue extends void ? () => 
 
 export type EventCallbackState<EventValue, State, Inputs = void> = [
   VoidableEventCallback<EventValue>,
-  [State extends void ? null : State, BehaviorSubject<State | null>, BehaviorSubject<RestrictArray<Inputs> | null>]
+  [State extends void ? null : State, BehaviorSubject<State | null>, BehaviorSubject<RestrictArray<Inputs> | null>],
 ]
 export type ReturnedState<EventValue, State, Inputs> = [
   EventCallbackState<EventValue, State, Inputs>[0],
-  EventCallbackState<EventValue, State, Inputs>[1][0]
+  EventCallbackState<EventValue, State, Inputs>[1][0],
 ]
 
 export type EventCallback<EventValue, State, Inputs> = Not<
@@ -43,16 +44,17 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
   inputs?: RestrictArray<Inputs>,
 ): ReturnedState<EventValue, State | null, Inputs> {
   const initialValue = (typeof initialState !== 'undefined' ? initialState : null) as VoidAsNull<State>
-  const inputSubject$ = new BehaviorSubject<RestrictArray<Inputs> | null>(typeof inputs === 'undefined' ? null : inputs)
-  const stateSubject$ = new BehaviorSubject<State | null>(initialValue)
   const [state, setState] = useState(initialValue)
-  const [event$] = useState(new Subject<EventValue>())
+  const event$ = useConstant(() => new Subject<EventValue>())
+  const state$ = useConstant(() => new BehaviorSubject<State | null>(initialValue))
+  const inputs$ = useConstant(
+    () => new BehaviorSubject<RestrictArray<Inputs> | null>(typeof inputs === 'undefined' ? null : inputs),
+  )
+
   function eventCallback(e: EventValue) {
     return event$.next(e)
   }
   const returnedCallback = useCallback(eventCallback, [])
-  const [state$] = useState(stateSubject$)
-  const [inputs$] = useState(inputSubject$)
 
   useEffect(() => {
     inputs$.next(inputs!)
