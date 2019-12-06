@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/rxjs-hooks
   docker:
-    - image: circleci/node:10-browsers
+    - image: circleci/node:12-browsers
 
 version: 2
 jobs:
@@ -23,9 +23,6 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ~/.cache/yarn
-      - run: greenkeeper-lockfile-update
-      - run: yarn build
-      - run: greenkeeper-lockfile-upload
       - persist_to_workspace:
           root: ~/rxjs-hooks
           paths:
@@ -39,7 +36,7 @@ jobs:
       - run: yarn test
       - run:
           name: report-coverage
-          command: npx codecov -f coverage/*.json
+          command: npx codecov
 
   deploy:
     <<: *defaults
