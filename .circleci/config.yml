@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/rxjs-hooks
   docker:
-    - image: circleci/node:10-browsers
+    - image: circleci/node:12-browsers
 
 version: 2
 jobs:
@@ -39,7 +39,7 @@ jobs:
       - run: yarn test
       - run:
           name: report-coverage
-          command: npx codecov -f coverage/*.json
+          command: npx codecov
 
   deploy:
     <<: *defaults
