@@ -38,8 +38,8 @@ jobs:
       - run: yarn lint
       - run: yarn test
       - run:
-          name: test-coverage
-          command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+          name: report-coverage
+          command: npx codecov -f coverage/*.json
 
   deploy:
     <<: *defaults
