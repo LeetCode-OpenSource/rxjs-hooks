@@ -202,8 +202,8 @@ type EventCallback<EventValue, State, Inputs> = Inputs extends void
   ? (eventSource$: Observable<EventValue>, state$: Observable<State>) => Observable<State>
   : (
       eventSource$: Observable<EventValue>,
-      inputs$: Observable<RestrictArray<Inputs>>,
       state$: Observable<State>,
+      inputs$: Observable<RestrictArray<Inputs>>,
     ) => Observable<State>
 
 declare function useEventCallback<EventValue, State = void>(
@@ -335,7 +335,7 @@ import "./styles.css";
 function App() {
   const [count, setCount] = useState(0);
   const [clickCallback, [description, x, y, prevDesc]] = useEventCallback(
-    (event$, inputs$, state$) =>
+    (event$, state$, inputs$) =>
       event$.pipe(
         map(event => [event.target.innerHTML, event.clientX, event.clientY]),
         combineLatest(inputs$),
