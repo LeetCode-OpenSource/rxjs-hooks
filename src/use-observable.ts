@@ -4,20 +4,13 @@ import useConstant from 'use-constant'
 
 import { RestrictArray } from './type'
 
-export type InputFactory<State, Inputs = undefined> = Inputs extends undefined
-  ? (state$: Observable<State>) => Observable<State>
-  : (inputs$: Observable<RestrictArray<Inputs>>, state$: Observable<State>) => Observable<State>
-
-export function useObservable<State>(inputFactory: InputFactory<State>): State | null
-export function useObservable<State>(inputFactory: InputFactory<State>, initialState: State): State
-export function useObservable<State, Inputs>(
-  inputFactory: InputFactory<State, Inputs>,
-  initialState: State,
-  inputs: RestrictArray<Inputs>,
-): State
-
+export type InputFactory<State> = (state$: Observable<State>) => Observable<State>;
+export type InputFactoryWithInputs<State, Inputs> = (inputs$: Observable<RestrictArray<Inputs>>, state$: Observable<State>) => Observable<State>;
+export function useObservable<State>(inputFactory: InputFactory<State>): State | null;
+export function useObservable<State>(inputFactory: InputFactory<State>, initialState: State): State;
+export function useObservable<State, Inputs>(inputFactory: InputFactoryWithInputs<State, Inputs>, initialState: State, inputs: RestrictArray<Inputs>): State;
 export function useObservable<State, Inputs extends ReadonlyArray<any>>(
-  inputFactory: InputFactory<State, Inputs>,
+  inputFactory: InputFactoryWithInputs<State, Inputs>,
   initialState?: State,
   inputs?: RestrictArray<Inputs>,
 ): State | null {
@@ -38,7 +31,7 @@ export function useObservable<State, Inputs extends ReadonlyArray<any>>(
         state$: Observable<State | undefined>,
       ) => Observable<State>)(inputs$, state$) as BehaviorSubject<State>
     } else {
-      output$ = (inputFactory as (state$: Observable<State | undefined>) => Observable<State>)(
+      output$ = (inputFactory as unknown as (state$: Observable<State | undefined>) => Observable<State>)(
         state$,
       ) as BehaviorSubject<State>
     }
