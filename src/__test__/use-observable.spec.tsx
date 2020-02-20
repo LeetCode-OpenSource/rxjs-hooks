@@ -121,10 +121,11 @@ describe('useObservable specs', () => {
     const spy = Sinon.spy()
     const timeToDelay = 200
     function Fixture(props: { foo: number; bar: string; baz: any }) {
-      const value = useObservable((inputs$: Observable<[number, any] | null>) => inputs$.pipe(tap(spy)), null, [
-        props.foo,
-        props.baz,
-      ] as any)
+      const value = useObservable(
+        (_: Observable<number | null>, inputs$: Observable<[number, any] | null>) => inputs$.pipe(tap(spy)),
+        null,
+        [props.foo, props.baz] as any,
+      )
       return (
         <>
           <h1>{value && value[0]}</h1>

@@ -80,7 +80,7 @@ function App() {
 type RestrictArray<T> = T extends any[] ? T : []
 type InputFactory<State, Inputs = undefined> = Inputs extends undefined
   ? (state$: Observable<State>) => Observable<State>
-  : (inputs$: Observable<RestrictArray<Inputs>>, state$: Observable<State>) => Observable<State>
+  : (state$: Observable<State>, inputs$: Observable<RestrictArray<Inputs>>) => Observable<State>
 
 declare function useObservable<State>(inputFactory: InputFactory<State>): State | null
 declare function useObservable<State>(inputFactory: InputFactory<State>, initialState: State): State
@@ -140,7 +140,7 @@ import { of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 function App(props: { foo: number }) {
-  const value = useObservable((inputs$) => inputs$.pipe(
+  const value = useObservable((_, inputs$) => inputs$.pipe(
     map(([val]) => val + 1),
   ), 200, [props.foo])
   return (
