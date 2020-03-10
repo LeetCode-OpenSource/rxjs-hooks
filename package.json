@@ -62,13 +62,11 @@
   "lint-staged": {
     "*.js": [
       "prettier --write",
-      "standard --fix",
-      "git add"
+      "standard --fix"
     ],
     "*.@(ts|tsx)": [
       "prettier --write",
-      "tslint -c tslint.json --fix",
-      "git add"
+      "tslint -c tslint.json --fix"
     ]
   },
   "prettier": {
