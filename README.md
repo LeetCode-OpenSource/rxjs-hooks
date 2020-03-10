@@ -1,13 +1,14 @@
 # React hooks for RxJS
 [![CircleCI](https://circleci.com/gh/LeetCode-OpenSource/rxjs-hooks.svg?style=svg)](https://circleci.com/gh/LeetCode-OpenSource/rxjs-hooks)
 [![codecov](https://codecov.io/gh/LeetCode-OpenSource/rxjs-hooks/branch/master/graph/badge.svg)](https://codecov.io/gh/LeetCode-OpenSource/rxjs-hooks)
+[![npm version](https://badge.fury.io/js/rxjs-hooks.svg)](https://badge.fury.io/js/rxjs-hooks)
 
 - [Installation](#installation)
 - [Demo](#quick-look)
 - [Apis](#apis)
   1. [useObservable](#useobservable)
   2. [useEventCallback](#useeventcallback)
-  
+
 ## Installation
 
 Using npm:
@@ -77,15 +78,16 @@ function App() {
 ### `useObservable`
 
 ```tsx
-type RestrictArray<T> = T extends any[] ? T : []
-type InputFactory<State, Inputs = undefined> = Inputs extends undefined
-  ? (state$: Observable<State>) => Observable<State>
-  : (state$: Observable<State>, inputs$: Observable<RestrictArray<Inputs>>) => Observable<State>
+export type InputFactory<State> = (state$: Observable<State>) => Observable<State>
+export type InputFactoryWithInputs<State, Inputs> = (
+  state$: Observable<State>,
+  inputs$: Observable<RestrictArray<Inputs>>,
+) => Observable<State>
 
-declare function useObservable<State>(inputFactory: InputFactory<State>): State | null
-declare function useObservable<State>(inputFactory: InputFactory<State>, initialState: State): State
-declare function useObservable<State, Inputs>(
-  inputFactory: InputFactory<State, Inputs>,
+export function useObservable<State>(inputFactory: InputFactory<State>): State | null
+export function useObservable<State>(inputFactory: InputFactory<State>, initialState: State): State
+export function useObservable<State, Inputs>(
+  inputFactory: InputFactoryWithInputs<State, Inputs>,
   initialState: State,
   inputs: RestrictArray<Inputs>,
 ): State
@@ -184,41 +186,6 @@ ReactDOM.render(<App />, document.querySelector('#root'))
 ```
 
 ### `useEventCallback`
-
-```tsx
-type RestrictArray<T> = T extends any[] ? T : []
-type VoidAsNull<T> = T extends void ? null : T
-
-type EventCallbackState<EventValue, State, Inputs = void> = [
-  (val: EventValue) => void,
-  [State extends void ? null : State, BehaviorSubject<State | null>, BehaviorSubject<RestrictArray<Inputs> | null>]
-]
-type ReturnedState<EventValue, State, Inputs> = [
-  EventCallbackState<EventValue, State, Inputs>[0],
-  EventCallbackState<EventValue, State, Inputs>[1][0]
-]
-
-type EventCallback<EventValue, State, Inputs> = Inputs extends void
-  ? (eventSource$: Observable<EventValue>, state$: Observable<State>) => Observable<State>
-  : (
-      eventSource$: Observable<EventValue>,
-      state$: Observable<State>,
-      inputs$: Observable<RestrictArray<Inputs>>,
-    ) => Observable<State>
-
-declare function useEventCallback<EventValue, State = void>(
-  callback: EventCallback<EventValue, State, void>,
-): ReturnedState<EventValue, State | null, void>
-declare function useEventCallback<EventValue, State = void>(
-  callback: EventCallback<EventValue, State, void>,
-  initialState: State,
-): ReturnedState<EventValue, State, void>
-declare function useEventCallback<EventValue, State = void, Inputs = void>(
-  callback: EventCallback<EventValue, State, Inputs>,
-  initialState: State,
-  inputs: RestrictArray<Inputs>,
-): ReturnedState<EventValue, State, Inputs>
-```
 
 #### Examples:
 

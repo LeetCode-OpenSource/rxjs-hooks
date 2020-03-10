@@ -9,6 +9,7 @@ export type InputFactoryWithInputs<State, Inputs> = (
   state$: Observable<State>,
   inputs$: Observable<RestrictArray<Inputs>>,
 ) => Observable<State>
+
 export function useObservable<State>(inputFactory: InputFactory<State>): State | null
 export function useObservable<State>(inputFactory: InputFactory<State>, initialState: State): State
 export function useObservable<State, Inputs>(
