@@ -18,7 +18,8 @@ jobs:
           name: yarn-with-greenkeeper
           command: |
             sudo yarn global add greenkeeper-lockfile@1
-            yarn
+            yarn install
+            yarn build
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
