@@ -14,8 +14,8 @@ const mockBackendRequest = (event$: Observable<React.MouseEvent<HTMLHeadElement>
 
 function IntervalValue(props: { interval: number }) {
   const [clickCallback, value] = useEventCallback(mockBackendRequest, 0, [])
-  const intervalValue = useObservable(
-    (inputs$, _) =>
+  const intervalValue = useObservable<number, number[]>(
+    (_, inputs$) =>
       inputs$.pipe(
         switchMap(([intervalTime]) => interval(intervalTime)),
         scan((acc) => acc + 1, 0),

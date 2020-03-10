@@ -80,7 +80,7 @@ function App() {
 type RestrictArray<T> = T extends any[] ? T : []
 type InputFactory<State, Inputs = undefined> = Inputs extends undefined
   ? (state$: Observable<State>) => Observable<State>
-  : (inputs$: Observable<RestrictArray<Inputs>>, state$: Observable<State>) => Observable<State>
+  : (state$: Observable<State>, inputs$: Observable<RestrictArray<Inputs>>) => Observable<State>
 
 declare function useObservable<State>(inputFactory: InputFactory<State>): State | null
 declare function useObservable<State>(inputFactory: InputFactory<State>, initialState: State): State
@@ -140,7 +140,7 @@ import { of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 function App(props: { foo: number }) {
-  const value = useObservable((inputs$) => inputs$.pipe(
+  const value = useObservable((_, inputs$) => inputs$.pipe(
     map(([val]) => val + 1),
   ), 200, [props.foo])
   return (
@@ -202,8 +202,8 @@ type EventCallback<EventValue, State, Inputs> = Inputs extends void
   ? (eventSource$: Observable<EventValue>, state$: Observable<State>) => Observable<State>
   : (
       eventSource$: Observable<EventValue>,
-      inputs$: Observable<RestrictArray<Inputs>>,
       state$: Observable<State>,
+      inputs$: Observable<RestrictArray<Inputs>>,
     ) => Observable<State>
 
 declare function useEventCallback<EventValue, State = void>(
@@ -335,7 +335,7 @@ import "./styles.css";
 function App() {
   const [count, setCount] = useState(0);
   const [clickCallback, [description, x, y, prevDesc]] = useEventCallback(
-    (event$, inputs$, state$) =>
+    (event$, state$, inputs$) =>
       event$.pipe(
         map(event => [event.target.innerHTML, event.clientX, event.clientY]),
         combineLatest(inputs$),

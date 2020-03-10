@@ -134,8 +134,8 @@ describe('useEventCallback specs', () => {
     const timeToDelay = 200
     const factory = (
       event$: Observable<React.MouseEvent<HTMLButtonElement>>,
-      inputs$: Observable<number[]>,
       _state$: Observable<number>,
+      inputs$: Observable<number[]>,
     ): Observable<number> =>
       event$.pipe(
         combineLatest(inputs$),

@@ -19,8 +19,8 @@ export type EventCallback<EventValue, State, Inputs> = Not<
   Inputs extends void ? true : false,
   (
     eventSource$: Observable<EventValue>,
-    inputs$: Observable<RestrictArray<Inputs>>,
     state$: Observable<State>,
+    inputs$: Observable<RestrictArray<Inputs>>,
   ) => Observable<State>,
   (eventSource$: Observable<EventValue>, state$: Observable<State>) => Observable<State>
 >
@@ -67,7 +67,7 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
     if (!inputs) {
       value$ = (callback as EventCallback<EventValue, State, void>)(event$, state$ as Observable<State>)
     } else {
-      value$ = (callback as any)(event$, inputs$ as Observable<Inputs>, state$ as Observable<State>)
+      value$ = (callback as any)(event$, state$ as Observable<State>, inputs$ as Observable<Inputs>)
     }
     const subscription = value$.subscribe((value) => {
       state$.next(value)
