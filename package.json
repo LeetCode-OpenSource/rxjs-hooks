@@ -37,7 +37,7 @@
     "lint-staged": "^10.0.1",
     "prettier": "^1.19.1",
     "react": "16.13.1",
-    "react-dom": "16.13.0",
+    "react-dom": "16.13.1",
     "react-test-renderer": "16.13.1",
     "rxjs": "^6.5.3",
     "sinon": "^9.0.0",
