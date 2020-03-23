@@ -50,6 +50,18 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
   const inputs$ = useConstant(
     () => new BehaviorSubject<RestrictArray<Inputs> | null>(typeof inputs === 'undefined' ? null : inputs),
   )
+  const subscription = useConstant(() => {
+    let value$: Observable<State>
+    if (!inputs) {
+      value$ = (callback as EventCallback<EventValue, State, void>)(event$, state$ as Observable<State>)
+    } else {
+      value$ = (callback as any)(event$, state$ as Observable<State>, inputs$ as Observable<Inputs>)
+    }
+    return value$.subscribe((value) => {
+      state$.next(value)
+      setState(value as VoidAsNull<State>)
+    })
+  })
 
   function eventCallback(e: EventValue) {
     return event$.next(e)
@@ -61,18 +73,6 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
   }, inputs || [])
 
   useEffect(() => {
-    setState(initialValue)
-    let value$: Observable<State>
-
-    if (!inputs) {
-      value$ = (callback as EventCallback<EventValue, State, void>)(event$, state$ as Observable<State>)
-    } else {
-      value$ = (callback as any)(event$, state$ as Observable<State>, inputs$ as Observable<Inputs>)
-    }
-    const subscription = value$.subscribe((value) => {
-      state$.next(value)
-      setState(value as VoidAsNull<State>)
-    })
     return () => {
       subscription.unsubscribe()
       state$.complete()
