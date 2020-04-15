@@ -44,7 +44,7 @@
     "source-map-loader": "^0.2.4",
     "standard": "^14.3.1",
     "ts-jest": "^25.0.0",
-    "ts-loader": "^6.2.1",
+    "ts-loader": "^7.0.0",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0",
