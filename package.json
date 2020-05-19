@@ -33,7 +33,7 @@
     "happypack": "^5.0.1",
     "html-webpack-plugin": "^4.0.1",
     "husky": "^4.0.0",
-    "jest": "^25.1.0",
+    "jest": "^26.0.1",
     "lint-staged": "^10.0.1",
     "prettier": "^2.0.1",
     "react": "16.13.1",
