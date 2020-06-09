@@ -21,7 +21,7 @@
     "url": "git@github.com:LeetCode-OpenSource/rxjs-hooks.git"
   },
   "devDependencies": {
-    "@types/jest": "^25.1.0",
+    "@types/jest": "^26.0.0",
     "@types/lodash": "^4.14.149",
     "@types/react-dom": "^16.9.4",
     "@types/react-test-renderer": "^16.9.1",
