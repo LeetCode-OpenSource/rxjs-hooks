@@ -55,6 +55,10 @@
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0"
   },
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "rxjs": "^6.5.3"
+  },
   "dependencies": {
     "tslib": "^2.0.0",
     "use-constant": "^1.0.0"
