@@ -2578,10 +2578,10 @@ eslint-config-standard-jsx@10.0.0:
   resolved "https://registry.yarnpkg.com/eslint-config-standard-jsx/-/eslint-config-standard-jsx-10.0.0.tgz#dc24992661325a2e480e2c3091d669f19034e18d"
   integrity sha512-hLeA2f5e06W1xyr/93/QJulN/rLbUVUmqTlexv9PRKHFwEC9ffJcH2LvJhMoEqYQBEYafedgGZXH2W8NUpt5lA==
 
-eslint-config-standard@16.0.0:
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-standard/-/eslint-config-standard-16.0.0.tgz#5f21e9b8be8be28c096e592e1137769d33c5cd92"
-  integrity sha512-kMCehB9yXIG+LNsu9uXfm06o6Pt63TFAOzn9tUOzw4r/hFIxHhNR1Xomxy+B5zMrXhqyfHVEcmanzttEjGei9w==
+eslint-config-standard@16.0.1:
+  version "16.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-config-standard/-/eslint-config-standard-16.0.1.tgz#9a385eea27f96b7918cb53f07e01e9d10cc56401"
+  integrity sha512-WBBiQQZdaPyL+4sPkGWhWrHCDtvJoU195B9j8yXE9uFQnX34gMXI5CeBRm95gx3PMEZPM5OpwET10hH4F4SxCA==
 
 eslint-import-resolver-node@^0.3.4:
   version "0.3.4"
@@ -6743,12 +6743,12 @@ standard-engine@^14.0.0:
     xdg-basedir "^4.0.0"
 
 standard@^16.0.0:
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/standard/-/standard-16.0.0.tgz#11545f0d3176e65e8af9fddb6d8c1a6eb43eca88"
-  integrity sha512-JJQiRSYkdN/aZ2GFtEmXkAZS2eAe/Y+CJ9EIdTHKYB7PMmLgb/5CdCs4TkKfa8BaUx6HRMItNaa06uEv6vHJ1w==
+  version "16.0.1"
+  resolved "https://registry.yarnpkg.com/standard/-/standard-16.0.1.tgz#20f47627e604906c60b2b50573bcf7285f6550aa"
+  integrity sha512-KiFEp96mkugCgW0mCrN9lAhlRdnmAiwNIU7mrUnYSL8QnzNGd1/bUtjRIfUtpwtFmFKrlYZDYa/ipX8Wy+03SA==
   dependencies:
     eslint "~7.12.1"
-    eslint-config-standard "16.0.0"
+    eslint-config-standard "16.0.1"
     eslint-config-standard-jsx "10.0.0"
     eslint-plugin-import "~2.22.1"
     eslint-plugin-node "~11.1.0"
