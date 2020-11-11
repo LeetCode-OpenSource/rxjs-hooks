@@ -6807,10 +6807,10 @@ stack-utils@^2.0.2:
   dependencies:
     escape-string-regexp "^2.0.0"
 
-standard-engine@^14.0.0:
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/standard-engine/-/standard-engine-14.0.0.tgz#dd0f2540e7ed18c095f8581e51f528057cc5c5b3"
-  integrity sha512-hRr5uixrRVBxSL6ayhwGi8HuiCmIifXjgsMwssOFZCCRRPofEOSGwDuiXHxdhmMqSyvAc4cS3HLfD2RKRBpz+g==
+standard-engine@^14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/standard-engine/-/standard-engine-14.0.1.tgz#fe568e138c3d9768fc59ff81001f7049908a8156"
+  integrity sha512-7FEzDwmHDOGva7r9ifOzD3BGdTbA7ujJ50afLVdW/tK14zQEptJjbFuUfn50irqdHDcTbNh0DTIoMPynMCXb0Q==
   dependencies:
     get-stdin "^8.0.0"
     minimist "^1.2.5"
@@ -6818,9 +6818,9 @@ standard-engine@^14.0.0:
     xdg-basedir "^4.0.0"
 
 standard@^16.0.0:
-  version "16.0.1"
-  resolved "https://registry.yarnpkg.com/standard/-/standard-16.0.1.tgz#20f47627e604906c60b2b50573bcf7285f6550aa"
-  integrity sha512-KiFEp96mkugCgW0mCrN9lAhlRdnmAiwNIU7mrUnYSL8QnzNGd1/bUtjRIfUtpwtFmFKrlYZDYa/ipX8Wy+03SA==
+  version "16.0.2"
+  resolved "https://registry.yarnpkg.com/standard/-/standard-16.0.2.tgz#2a6e6efb9ca2c0be7945d8c5397458fccb326a0f"
+  integrity sha512-oWPZXPEP9MMYo6ohmb9QcmeYLCl7kX8QZ6DzhIhlol4JNgvJG2MydIcz2NgEdljk4FYCT8hh/CoXncaGsW8qLw==
   dependencies:
     eslint "~7.12.1"
     eslint-config-standard "16.0.1"
@@ -6829,7 +6829,7 @@ standard@^16.0.0:
     eslint-plugin-node "~11.1.0"
     eslint-plugin-promise "~4.2.1"
     eslint-plugin-react "~7.21.5"
-    standard-engine "^14.0.0"
+    standard-engine "^14.0.1"
 
 static-extend@^0.1.1:
   version "0.1.2"
