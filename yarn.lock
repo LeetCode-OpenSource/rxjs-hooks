@@ -7517,9 +7517,9 @@ urlgrey@0.4.4:
   integrity sha1-iS/pWWCAXoVRnxzUOJ8stMu3ZS8=
 
 use-constant@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/use-constant/-/use-constant-1.0.0.tgz#cfab998e6fc19ddc62b056875709f1420e339a10"
-  integrity sha512-HmVrMl3+1tEr64ace4UtP5WTdnLyrvYKwF54JVf7B7lSB76JSERDvvgWkaaxlOM3S0dSl1U3WH1l9PupNnzsvQ==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/use-constant/-/use-constant-1.1.0.tgz#76d36a0edf16d4cc8565361f522b55da5f8f3f22"
+  integrity sha512-yrflEfv7Xv/W8WlYV6nwRH01K+2BpR4cWxuzY03yPRjYZuHixhGlvnJN5O2bRYrXGpJ4zy8QjFABGIQ2QXeBOA==
 
 use@^3.1.0:
   version "3.1.1"
