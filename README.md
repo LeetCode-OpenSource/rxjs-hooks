@@ -14,13 +14,13 @@
 Using npm:
 
 ```
-$ npm i --save rxjs-hooks
+$ npm i --save rxjs-hooks rxjs
 ```
 
 Or yarn:
 
 ```
-$ yarn add rxjs-hooks
+$ yarn add rxjs-hooks rxjs
 ```
 
 ## Quick look
