@@ -1,0 +1,13 @@
+# from .gitignore
+node_modules/
+coverage/
+dist/
+.idea
+.cache
+*.tgz
+.DS_Store
+esm
+esnext
+
+# custom ignore pattern
+*.html
