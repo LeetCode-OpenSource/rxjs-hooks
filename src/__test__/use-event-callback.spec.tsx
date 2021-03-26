@@ -87,7 +87,7 @@ describe('useEventCallback specs', () => {
     const factory = (event$: Observable<React.MouseEvent<HTMLButtonElement>>, state$: Observable<number>) =>
       event$.pipe(
         withLatestFrom(state$),
-        map(([_, state]) => {
+        map(([, state]) => {
           return state + value
         }),
         delay(timeToDelay),
@@ -130,7 +130,7 @@ describe('useEventCallback specs', () => {
     ): Observable<number> =>
       event$.pipe(
         combineLatest(inputs$),
-        map(([_, [count]]) => {
+        map(([, [count]]) => {
           return value + count
         }),
         delay(timeToDelay),

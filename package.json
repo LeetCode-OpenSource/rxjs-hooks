@@ -12,9 +12,11 @@
     "build": "yarn build:esm && yarn build:cjs",
     "build:esm": "rm -rf dist/esm && tsc -p src/tsconfig.json --module es2015 --target es5 --outDir dist/esm",
     "build:cjs": "rm -rf dist/cjs && tsc -p src/tsconfig.json --module commonjs --target es5 --outDir dist/cjs",
-    "lint": "tslint -c tslint.json -p src/tsconfig.json",
     "start": "webpack-dev-server --config ./tools/webpack.config.js --progress --color",
-    "test": "NODE_ENV=test jest --no-cache --ci"
+    "test": "NODE_ENV=test jest --no-cache --ci",
+    "lint": "yarn lint:eslint && yarn lint:tsc",
+    "lint:eslint": "eslint . --ext .ts,.tsx --fix --max-warnings 0",
+    "lint:tsc": "tsc -p ./tsconfig.json --noEmit"
   },
   "repository": {
     "type": "git",
@@ -28,8 +30,13 @@
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.3",
     "@types/webpack": "^4.41.0",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
     "browser-resolve": "^2.0.0",
     "codecov": "^3.6.1",
+    "eslint": "^7.22.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-react": "^7.23.1",
     "fork-ts-checker-webpack-plugin": "^6.0.0",
     "happypack": "^5.0.1",
     "html-webpack-plugin": "^5.0.0",
@@ -46,18 +53,13 @@
     "standard": "^16.0.0",
     "ts-jest": "^26.0.0",
     "ts-loader": "^8.0.0",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-eslint-rules": "^5.4.0",
-    "tslint-react": "^4.1.0",
-    "tslint-sonarts": "^1.9.0",
-    "typescript": "^3.7.3",
+    "typescript": "^4.2.0",
     "webpack": "^5.0.0",
     "webpack-cli": "^4.0.0",
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
-    "tslib": "^2.0.0",
+    "tslib": "^2.1.0",
     "use-constant": "^1.0.0"
   },
   "lint-staged": {
@@ -67,7 +69,7 @@
     ],
     "*.@(ts|tsx)": [
       "prettier --write",
-      "tslint -c tslint.json --fix"
+      "yarn lint:eslint"
     ]
   },
   "prettier": {
