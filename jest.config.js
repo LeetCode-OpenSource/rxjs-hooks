@@ -1,5 +1,4 @@
 module.exports = {
-  browser: true,
   verbose: true,
   rootDir: __dirname,
   setupFilesAfterEnv: ['<rootDir>/tools/test-setup.js'],

@@ -46,12 +46,7 @@ describe('useEventCallback specs', () => {
     const timer = Sinon.useFakeTimers()
     const timeToDelay = 200
     const value = 1
-    const Fixture = createFixture((event$: Observable<any>) =>
-      event$.pipe(
-        mapTo(value),
-        delay(timeToDelay),
-      ),
-    )
+    const Fixture = createFixture((event$: Observable<any>) => event$.pipe(mapTo(value), delay(timeToDelay)))
     const fixtureNode = <Fixture />
     const testRenderer = create(fixtureNode)
     act(() => testRenderer.update(fixtureNode))
@@ -69,11 +64,7 @@ describe('useEventCallback specs', () => {
     const value = 1
     const timeToDelay = 200
     const Fixture = createFixture(
-      (event$: Observable<any>) =>
-        event$.pipe(
-          mapTo(value),
-          delay(timeToDelay),
-        ),
+      (event$: Observable<any>) => event$.pipe(mapTo(value), delay(timeToDelay)),
       initialValue,
     )
     const fixtureNode = <Fixture />
@@ -189,7 +180,9 @@ describe('useEventCallback specs', () => {
     )
     const fixtureNode = <Fixture />
     const testRenderer = create(fixtureNode)
-    testRenderer.unmount()
+    act(() => {
+      testRenderer.unmount()
+    })
     expect(spy.callCount).toBe(1)
   })
 })

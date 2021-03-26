@@ -71,7 +71,9 @@ describe('useObservable specs', () => {
 
     const testRenderer = create(fixtureNode)
     expect(spy.callCount).toBe(0)
-    testRenderer.unmount()
+    act(() => {
+      testRenderer.unmount()
+    })
     expect(spy.callCount).toBe(1)
   })
 
