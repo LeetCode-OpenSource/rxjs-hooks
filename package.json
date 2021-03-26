@@ -28,6 +28,7 @@
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.3",
     "@types/webpack": "^4.41.0",
+    "browser-resolve": "^2.0.0",
     "codecov": "^3.6.1",
     "fork-ts-checker-webpack-plugin": "^6.0.0",
     "happypack": "^5.0.1",
@@ -81,5 +82,8 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "jest": {
+    "resolver": "browser-resolve"
   }
 }
