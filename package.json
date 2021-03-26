@@ -16,7 +16,8 @@
     "test": "NODE_ENV=test jest --no-cache --ci",
     "lint": "yarn lint:eslint && yarn lint:tsc",
     "lint:eslint": "eslint . --ext .ts,.tsx --fix --max-warnings 0",
-    "lint:tsc": "tsc -p ./tsconfig.json --noEmit"
+    "lint:tsc": "tsc -p ./tsconfig.json --noEmit",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -61,6 +62,10 @@
   "dependencies": {
     "tslib": "^2.1.0",
     "use-constant": "^1.0.0"
+  },
+  "peerDependencies": {
+    "react": "17.0.1",
+    "rxjs": "^6.5.3"
   },
   "lint-staged": {
     "*.js": [
