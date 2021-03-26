@@ -45,9 +45,9 @@
     "jest": "^26.0.1",
     "lint-staged": "^10.0.1",
     "prettier": "^2.0.1",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-test-renderer": "17.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-test-renderer": "17.0.2",
     "rxjs": "^6.5.3",
     "sinon": "^9.0.0",
     "source-map-loader": "^2.0.0",
@@ -64,7 +64,7 @@
     "use-constant": "^1.0.0"
   },
   "peerDependencies": {
-    "react": "17.0.1",
+    "react": "17.0.2",
     "rxjs": "^6.5.3"
   },
   "lint-staged": {
