@@ -30,7 +30,7 @@
     "@types/react-test-renderer": "^17.0.0",
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.3",
-    "@types/webpack": "^4.41.0",
+    "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
     "browser-resolve": "^2.0.0",
