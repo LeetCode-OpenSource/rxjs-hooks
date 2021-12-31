@@ -962,9 +962,9 @@
     "@types/node" "*"
 
 "@types/sinon-chai@^3.2.3":
-  version "3.2.7"
-  resolved "https://registry.yarnpkg.com/@types/sinon-chai/-/sinon-chai-3.2.7.tgz#5d4c7b08802e017c02ef2f3fc886f055f182faa5"
-  integrity sha512-vpW7l+fY6C/E+i7HnPTpoKfspNI6OBumaD6XNJk8UYXW+UTPmLlge8+dUCQsxkp730Xgjzpq0g9w+briOOWUQA==
+  version "3.2.8"
+  resolved "https://registry.yarnpkg.com/@types/sinon-chai/-/sinon-chai-3.2.8.tgz#5871d09ab50d671d8e6dd72e9073f8e738ac61dc"
+  integrity sha512-d4ImIQbT/rKMG8+AXpmcan5T2/PNeSjrYhvkwet6z0p8kzYtfgA32xzOBlbU0yqJfq+/0Ml805iFoODO0LP5/g==
   dependencies:
     "@types/chai" "*"
     "@types/sinon" "*"
