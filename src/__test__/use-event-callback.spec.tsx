@@ -8,7 +8,7 @@ import { find } from './find'
 import { useEventCallback } from '../use-event-callback'
 
 describe('useEventCallback specs', () => {
-  function createFixture<T>(
+  function createFixture<T extends React.ReactNode>(
     factory: (event$: Observable<React.SyntheticEvent<any>>) => Observable<T>,
     initialValue?: T,
   ) {
