@@ -1,6 +1,6 @@
 import React from 'react'
 import { Observable, of, Observer } from 'rxjs'
-import { mapTo, delay, withLatestFrom, combineLatest, map } from 'rxjs/operators'
+import { map, delay, withLatestFrom, combineLatestWith } from 'rxjs/operators'
 import { create, act } from 'react-test-renderer'
 import * as Sinon from 'sinon'
 
@@ -46,7 +46,12 @@ describe('useEventCallback specs', () => {
     const timer = Sinon.useFakeTimers()
     const timeToDelay = 200
     const value = 1
-    const Fixture = createFixture((event$: Observable<any>) => event$.pipe(mapTo(value), delay(timeToDelay)))
+    const Fixture = createFixture((event$: Observable<any>) =>
+      event$.pipe(
+        map(() => value),
+        delay(timeToDelay),
+      ),
+    )
     const fixtureNode = <Fixture />
     const testRenderer = create(fixtureNode)
     act(() => testRenderer.update(fixtureNode))
@@ -64,7 +69,11 @@ describe('useEventCallback specs', () => {
     const value = 1
     const timeToDelay = 200
     const Fixture = createFixture(
-      (event$: Observable<any>) => event$.pipe(mapTo(value), delay(timeToDelay)),
+      (event$: Observable<any>) =>
+        event$.pipe(
+          map(() => value),
+          delay(timeToDelay),
+        ),
       initialValue,
     )
     const fixtureNode = <Fixture />
@@ -129,7 +138,7 @@ describe('useEventCallback specs', () => {
       inputs$: Observable<number[]>,
     ): Observable<number> =>
       event$.pipe(
-        combineLatest(inputs$),
+        combineLatestWith(inputs$),
         map(([, [count]]) => {
           return value + count
         }),

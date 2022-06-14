@@ -34,12 +34,14 @@ export function useObservable<State, Inputs extends ReadonlyArray<any>>(
   useEffect(() => {
     let output$: BehaviorSubject<State>
     if (inputs) {
-      output$ = (inputFactory as (
-        state$: Observable<State | undefined>,
-        inputs$: Observable<RestrictArray<Inputs> | undefined>,
-      ) => Observable<State>)(state$, inputs$) as BehaviorSubject<State>
+      output$ = (
+        inputFactory as (
+          state$: Observable<State | undefined>,
+          inputs$: Observable<RestrictArray<Inputs> | undefined>,
+        ) => Observable<State>
+      )(state$, inputs$) as BehaviorSubject<State>
     } else {
-      output$ = ((inputFactory as unknown) as (state$: Observable<State | undefined>) => Observable<State>)(
+      output$ = (inputFactory as unknown as (state$: Observable<State | undefined>) => Observable<State>)(
         state$,
       ) as BehaviorSubject<State>
     }

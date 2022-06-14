@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import { interval, Observable, timer } from 'rxjs'
-import { exhaustMap, mapTo, scan, switchMap } from 'rxjs/operators'
+import { exhaustMap, map, scan, switchMap } from 'rxjs/operators'
 
 import { useObservable } from '../src/use-observable'
 import { useEventCallback } from '../src/use-event-callback'
 
 const mockBackendRequest = (event$: Observable<React.MouseEvent<HTMLHeadElement>>) =>
   event$.pipe(
-    exhaustMap(() => timer(1000).pipe(mapTo(100))),
+    exhaustMap(() => timer(1000).pipe(map(() => 100))),
     scan((acc, cur) => acc + cur, 0),
   )
 
