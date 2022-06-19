@@ -287,7 +287,7 @@ const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
 ```
 
-**A complex example: useEventCallback with both inputs$ and state$**
+**A complex example: useEventCallback with both `inputs$` and `state$`**
 
 [live demo](https://codesandbox.io/s/n1pn02jxym)
 
