@@ -398,4 +398,4 @@ const App = () => {
 ```
 
 ## Known issues
-If you are using React 18 + `StrictMode`, `rxjs-hooks` will not work properly. Because in React 18, `StrictMode` will force unmount hooks to trigger twice, which will result in unexpected behaviours.
+If you are using React 18 + `StrictMode` under NODE_ENV=development, `rxjs-hooks` may not work properly. https://github.com/facebook/react/issues/24502#issuecomment-1118846544
