@@ -1,6 +1,8 @@
 import { Observable, BehaviorSubject } from 'rxjs'
-import { useState, useEffect } from 'react'
+import { tap } from 'rxjs/operators'
+import { useEffect, useMemo } from 'react'
 import useConstant from 'use-constant'
+import { useSyncExternalStore } from 'use-sync-external-store/shim'
 
 import { RestrictArray } from './type'
 
@@ -22,39 +24,41 @@ export function useObservable<State, Inputs extends ReadonlyArray<any>>(
   initialState?: State,
   inputs?: RestrictArray<Inputs>,
 ): State | null {
-  const [state, setState] = useState(typeof initialState !== 'undefined' ? initialState : null)
-
   const state$ = useConstant(() => new BehaviorSubject<State | undefined>(initialState))
   const inputs$ = useConstant(() => new BehaviorSubject<RestrictArray<Inputs> | undefined>(inputs))
+
+  useEffect(() => {
+    return () => {
+      state$.complete()
+      inputs$.complete()
+    }
+  }, [])
 
   useEffect(() => {
     inputs$.next(inputs)
   }, inputs || [])
 
-  useEffect(() => {
-    let output$: BehaviorSubject<State>
+  const subscribe = useMemo(() => {
+    let output$: Observable<State>
     if (inputs) {
       output$ = (
         inputFactory as (
           state$: Observable<State | undefined>,
           inputs$: Observable<RestrictArray<Inputs> | undefined>,
         ) => Observable<State>
-      )(state$, inputs$) as BehaviorSubject<State>
+      )(state$, inputs$)
     } else {
-      output$ = (inputFactory as unknown as (state$: Observable<State | undefined>) => Observable<State>)(
-        state$,
-      ) as BehaviorSubject<State>
+      output$ = (inputFactory as unknown as (state$: Observable<State | undefined>) => Observable<State>)(state$)
     }
-    const subscription = output$.subscribe((value) => {
-      state$.next(value)
-      setState(value)
-    })
-    return () => {
-      subscription.unsubscribe()
-      inputs$.complete()
-      state$.complete()
+    return (onStorageChange: () => void) => {
+      const subscription = output$.pipe(tap((s) => state$.next(s))).subscribe(onStorageChange)
+      return () => subscription.unsubscribe()
     }
-  }, []) // immutable forever
+  }, [])
 
-  return state
+  const getSnapShot = useMemo(() => {
+    return () => state$.getValue() ?? null
+  }, [])
+
+  return useSyncExternalStore(subscribe, getSnapShot, getSnapShot)
 }

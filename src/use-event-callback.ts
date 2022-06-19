@@ -1,6 +1,8 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useCallback, useMemo } from 'react'
 import useConstant from 'use-constant'
 import { Observable, BehaviorSubject, Subject } from 'rxjs'
+import { tap } from 'rxjs/operators'
+import { useSyncExternalStore } from 'use-sync-external-store/shim'
 
 import { RestrictArray, VoidAsNull, Not } from './type'
 
@@ -44,42 +46,46 @@ export function useEventCallback<EventValue, State = void, Inputs = void>(
   inputs?: RestrictArray<Inputs>,
 ): ReturnedState<EventValue, State | null, Inputs> {
   const initialValue = (typeof initialState !== 'undefined' ? initialState : null) as VoidAsNull<State>
-  const [state, setState] = useState(initialValue)
   const event$ = useConstant(() => new Subject<EventValue>())
   const state$ = useConstant(() => new BehaviorSubject<State | null>(initialValue))
   const inputs$ = useConstant(
     () => new BehaviorSubject<RestrictArray<Inputs> | null>(typeof inputs === 'undefined' ? null : inputs),
   )
 
-  function eventCallback(e: EventValue) {
-    return event$.next(e)
-  }
-  const returnedCallback = useCallback(eventCallback, [])
+  useEffect(() => {
+    return () => {
+      state$.complete()
+      inputs$.complete()
+      event$.complete()
+    }
+  }, [])
+
+  const returnedCallback = useCallback(function eventCallback(e: EventValue) {
+    event$.next(e)
+  }, [])
 
   useEffect(() => {
     inputs$.next(inputs!)
   }, inputs || [])
 
-  useEffect(() => {
-    setState(initialValue)
+  const subscribe = useMemo(() => {
     let value$: Observable<State>
-
     if (!inputs) {
       value$ = (callback as EventCallback<EventValue, State, void>)(event$, state$ as Observable<State>)
     } else {
       value$ = (callback as any)(event$, state$ as Observable<State>, inputs$ as Observable<Inputs>)
     }
-    const subscription = value$.subscribe((value) => {
-      state$.next(value)
-      setState(value as VoidAsNull<State>)
-    })
-    return () => {
-      subscription.unsubscribe()
-      state$.complete()
-      inputs$.complete()
-      event$.complete()
+    return (onStorageChange: () => void) => {
+      const subscription = value$.pipe(tap((s) => state$.next(s))).subscribe(onStorageChange)
+      return () => subscription.unsubscribe()
     }
-  }, []) // immutable forever
+  }, [])
+
+  const getSnapShot = useMemo(() => {
+    return () => state$.getValue() as VoidAsNull<State>
+  }, [])
+
+  const state = useSyncExternalStore(subscribe, getSnapShot, getSnapShot)
 
   return [returnedCallback as VoidableEventCallback<EventValue>, state]
 }

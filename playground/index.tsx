@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom/client'
 import { interval, Observable, timer } from 'rxjs'
 import { exhaustMap, map, scan, switchMap } from 'rxjs/operators'
 
@@ -43,4 +43,4 @@ function App() {
   )
 }
 
-ReactDOM.render(<App />, document.querySelector('#app'))
+ReactDOM.createRoot(document.querySelector('#app')!).render(<App />)
