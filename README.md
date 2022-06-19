@@ -25,11 +25,11 @@ $ yarn add rxjs-hooks rxjs
 
 ## Quick look
 
-- [useObservable - live demo](https://codesandbox.io/s/00x0z72l5n)
+- [useObservable - live demo](https://codesandbox.io/s/rxjs-hooks-basic-oee81n)
 
 ```javascript
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { useObservable } from "rxjs-hooks";
 import { interval } from "rxjs";
 import { map } from "rxjs/operators";
