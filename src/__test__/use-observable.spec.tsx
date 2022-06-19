@@ -119,7 +119,6 @@ describe('useObservable specs', () => {
   })
 
   it('should emit changed props in observableFactory', () => {
-    const timer = Sinon.useFakeTimers()
     const spy = Sinon.spy()
     const timeToDelay = 200
     function Fixture(props: { foo: number; bar: string; baz: any }) {
@@ -152,7 +151,7 @@ describe('useObservable specs', () => {
     act(() => testRenderer.update(<Fixture {...newProps} />))
     // wait useEffect fired
     // https://reactjs.org/docs/hooks-reference.html#timing-of-effects
-    timer.tick(timeToDelay)
+    fakeTimer.tick(timeToDelay)
     expect(spy.callCount).toBe(1)
     expect(spy.args[0]).toEqual([[newProps.foo, newProps.baz]])
     expect(find(testRenderer.root, 'h1').children).toEqual([`${newProps.foo}`])
@@ -160,7 +159,7 @@ describe('useObservable specs', () => {
 
     const renewProps = { ...props, foo: 1000 }
     act(() => testRenderer.update(<Fixture {...renewProps} />))
-    timer.tick(timeToDelay)
+    fakeTimer.tick(timeToDelay)
 
     expect(spy.callCount).toBe(2)
     expect(spy.args[1]).toEqual([[renewProps.foo, renewProps.baz]])
