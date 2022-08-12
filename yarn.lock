@@ -4788,9 +4788,9 @@ v8-to-istanbul@^8.1.0:
     source-map "^0.7.3"
 
 vite@^3.0.0:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-3.0.6.tgz#08e85ebaa34a3b647cb1365c87675b45f3511be0"
-  integrity sha512-pjfsWIzfUlQME/VAmU6SsjdHkTt6WAHysuqPkHDcjzNu6IGtxDSZ/VfRYOwHaCqX4M3Ivz0kxuSfAPM6gAIX+w==
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-3.0.7.tgz#f1e379857e9c5d652126f8b20d371e1365eb700f"
+  integrity sha512-dILhvKba1mbP1wCezVQx/qhEK7/+jVn9ciadEcyKMMhZpsuAi/eWZfJRMkmYlkSFG7Qq9NvJbgFq4XOBxugJsA==
   dependencies:
     esbuild "^0.14.47"
     postcss "^8.4.16"
