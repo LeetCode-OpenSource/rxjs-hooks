@@ -134,7 +134,6 @@ function App() {
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { useObservable } from 'rxjs-hooks'
-import { of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 function App(props: { foo: number }) {
