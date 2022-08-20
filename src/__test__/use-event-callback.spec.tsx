@@ -2,7 +2,7 @@ import React from 'react'
 import { Observable, of, Observer } from 'rxjs'
 import { map, delay, withLatestFrom, combineLatestWith } from 'rxjs/operators'
 import { create, act } from 'react-test-renderer'
-import * as Sinon from 'sinon'
+import { describe, it, expect, vi } from 'vitest'
 
 import { find } from './find'
 import { useEventCallback } from '../use-event-callback'
@@ -43,7 +43,7 @@ describe('useEventCallback specs', () => {
   })
 
   it('should trigger handle async callback', () => {
-    const timer = Sinon.useFakeTimers()
+    const timer = vi.useFakeTimers()
     const timeToDelay = 200
     const value = 1
     const Fixture = createFixture((event$: Observable<any>) =>
@@ -57,14 +57,14 @@ describe('useEventCallback specs', () => {
     act(() => testRenderer.update(fixtureNode))
     const button = find(testRenderer.root, 'button')
     button.props.onClick()
-    timer.tick(timeToDelay)
+    timer.advanceTimersByTime(timeToDelay)
     act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value}`])
-    timer.restore()
+    timer.useRealTimers()
   })
 
   it('should handle the initial value', () => {
-    const timer = Sinon.useFakeTimers()
+    const timer = vi.useFakeTimers()
     const initialValue = 1000
     const value = 1
     const timeToDelay = 200
@@ -82,14 +82,14 @@ describe('useEventCallback specs', () => {
     act(() => testRenderer.update(fixtureNode))
     const button = find(testRenderer.root, 'button')
     button.props.onClick()
-    timer.tick(timeToDelay)
+    timer.advanceTimersByTime(timeToDelay)
     act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value}`])
-    timer.restore()
+    timer.useRealTimers()
   })
 
   it('should handle the state changed', () => {
-    const timer = Sinon.useFakeTimers()
+    const timer = vi.useFakeTimers()
     const initialValue = 1000
     const value = 1
     const timeToDelay = 200
@@ -117,18 +117,18 @@ describe('useEventCallback specs', () => {
     act(() => testRenderer.update(fixtureNode))
     const button = find(testRenderer.root, 'button')
     button.props.onClick()
-    timer.tick(timeToDelay)
+    timer.advanceTimersByTime(timeToDelay)
     act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${initialValue + value}`])
     button.props.onClick()
-    timer.tick(timeToDelay)
+    timer.advanceTimersByTime(timeToDelay)
     act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${initialValue + value * 2}`])
-    timer.restore()
+    timer.useRealTimers()
   })
 
   it('should handle the inputs changed', () => {
-    const timer = Sinon.useFakeTimers()
+    const timer = vi.useFakeTimers()
     const initialValue = 1000
     const value = 1
     const timeToDelay = 200
@@ -160,20 +160,20 @@ describe('useEventCallback specs', () => {
     act(() => testRenderer.update(fixtureNode))
     const button = find(testRenderer.root, 'button')
     button.props.onClick()
-    timer.tick(timeToDelay)
+    timer.advanceTimersByTime(timeToDelay)
     act(() => testRenderer.update(fixtureNode))
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value + 1}`])
     act(() => testRenderer.update(<Fixture count={4} />))
     button.props.onClick()
-    timer.tick(timeToDelay)
+    timer.advanceTimersByTime(timeToDelay)
     act(() => testRenderer.update(<Fixture count={4} />))
-    timer.tick(timeToDelay)
+    timer.advanceTimersByTime(timeToDelay)
     expect(find(testRenderer.root, 'h1').children).toEqual([`${value + 4}`])
-    timer.restore()
+    timer.useRealTimers()
   })
 
   it('should call teardown logic after unmount', () => {
-    const spy = Sinon.spy()
+    const spy = vi.fn()
     const Fixture = createFixture(
       () =>
         new Observable((observer: Observer<number>) => {
@@ -192,6 +192,6 @@ describe('useEventCallback specs', () => {
     act(() => {
       testRenderer.unmount()
     })
-    expect(spy.callCount).toBe(1)
+    expect(spy).toHaveBeenCalledOnce()
   })
 })

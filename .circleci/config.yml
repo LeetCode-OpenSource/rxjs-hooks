@@ -34,7 +34,7 @@ jobs:
       - attach_workspace:
           at: ~/rxjs-hooks
       - run: yarn lint
-      - run: yarn test
+      - run: yarn coverage
       - run:
           name: report-coverage
           command: npx codecov
