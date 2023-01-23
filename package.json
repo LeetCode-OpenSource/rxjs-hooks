@@ -48,7 +48,7 @@
     "standard": "^17.0.0",
     "typescript": "^4.2.0",
     "vite": "^3.0.0",
-    "vitest": "^0.24.0"
+    "vitest": "^0.28.1"
   },
   "dependencies": {
     "tslib": "^2.1.0",
